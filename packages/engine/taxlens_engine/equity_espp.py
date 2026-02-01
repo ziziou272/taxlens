@@ -39,26 +39,20 @@ class ESPPPurchase:
     """
     Represents an ESPP purchase.
     
-    Typical ESPP uses lookback provision:
-    Purchase price = 85% × min(offering_price, purchase_date_fmv)
+    Accepts direct purchase_price and fmv_at_purchase (per share) for flexibility.
     """
     offering_date: date
     purchase_date: date
     shares_purchased: Decimal
     offering_price: Decimal  # FMV at offering start
-    purchase_date_fmv: Decimal  # FMV at purchase
+    purchase_price: Decimal  # Actual price paid per share
+    fmv_at_purchase: Decimal  # FMV per share at purchase
     discount_rate: Decimal = Decimal("0.15")  # Typically 15%
     
     @property
     def lookback_price(self) -> Decimal:
-        """Lower of offering price or purchase date FMV."""
-        return min(self.offering_price, self.purchase_date_fmv)
-    
-    @property
-    def purchase_price(self) -> Decimal:
-        """Actual price paid per share."""
-        price = self.lookback_price * (1 - self.discount_rate)
-        return price.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        """Lower of offering price or purchase FMV."""
+        return min(self.offering_price, self.fmv_at_purchase)
     
     @property
     def total_cost(self) -> Decimal:
@@ -68,9 +62,21 @@ class ESPPPurchase:
         )
     
     @property
-    def fmv_at_purchase(self) -> Decimal:
+    def fmv_total(self) -> Decimal:
         """Total FMV at purchase."""
-        return (self.shares_purchased * self.purchase_date_fmv).quantize(
+        return (self.shares_purchased * self.fmv_at_purchase).quantize(
+            Decimal("0.01"), rounding=ROUND_HALF_UP
+        )
+    
+    @property
+    def discount_per_share(self) -> Decimal:
+        """Discount per share = FMV - purchase price."""
+        return self.fmv_at_purchase - self.purchase_price
+    
+    @property
+    def total_discount(self) -> Decimal:
+        """Total discount received."""
+        return (self.discount_per_share * self.shares_purchased).quantize(
             Decimal("0.01"), rounding=ROUND_HALF_UP
         )
     
@@ -81,7 +87,7 @@ class ESPPPurchase:
         
         This is the taxable spread for disqualifying disposition.
         """
-        spread = self.purchase_date_fmv - self.purchase_price
+        spread = self.fmv_at_purchase - self.purchase_price
         return (spread * self.shares_purchased).quantize(
             Decimal("0.01"), rounding=ROUND_HALF_UP
         )
@@ -145,6 +151,11 @@ class ESPPSale:
         return self.disposition_type == ESPPDispositionType.QUALIFYING
     
     @property
+    def is_qualifying_disposition(self) -> bool:
+        """Alias for is_qualifying."""
+        return self.is_qualifying
+    
+    @property
     def total_gain(self) -> Decimal:
         """Total economic gain (sale - purchase price)."""
         cost = self.shares_sold * self.purchase.purchase_price
@@ -156,8 +167,8 @@ class ESPPSale:
         """
         Ordinary income portion.
         
-        Qualifying: Lesser of actual gain or statutory discount
-        Disqualifying: Actual discount received at purchase
+        Qualifying: Lesser of actual gain or statutory discount (0 if loss)
+        Disqualifying: Actual discount received at purchase (FMV - purchase price)
         """
         if self.is_qualifying:
             # Cap at statutory discount (15% of offering price)
@@ -171,21 +182,33 @@ class ESPPSale:
                 Decimal("0.01"), rounding=ROUND_HALF_UP
             )
         else:
-            # Disqualifying: actual discount received
-            discount = self.purchase.discount_received * (
-                self.shares_sold / self.purchase.shares_purchased
-            )
-            # But limited to actual gain if stock dropped
-            if self.total_gain <= 0:
+            # Disqualifying: ordinary income = (FMV at purchase - purchase price) × shares
+            # This is the "bargain element" - always taxable as W-2 income
+            discount_per_share = self.purchase.fmv_at_purchase - self.purchase.purchase_price
+            if discount_per_share <= 0:
                 return Decimal("0")
-            return min(discount, self.total_gain).quantize(
+            return (discount_per_share * self.shares_sold).quantize(
                 Decimal("0.01"), rounding=ROUND_HALF_UP
             )
     
     @property
     def capital_gain(self) -> Decimal:
-        """Capital gain portion (total gain - ordinary income)."""
-        return self.total_gain - self.ordinary_income
+        """
+        Capital gain portion.
+        
+        Qualifying: Total gain - ordinary income (based on purchase price cost basis)
+        Disqualifying: (Sale price - FMV at purchase) × shares (FMV is cost basis)
+        """
+        if self.is_qualifying:
+            return (self.total_gain - self.ordinary_income).quantize(
+                Decimal("0.01"), rounding=ROUND_HALF_UP
+            )
+        else:
+            # Disqualifying: cost basis = FMV at purchase
+            gain_per_share = self.sale_price - self.purchase.fmv_at_purchase
+            return (gain_per_share * self.shares_sold).quantize(
+                Decimal("0.01"), rounding=ROUND_HALF_UP
+            )
     
     @property
     def is_long_term_capital_gain(self) -> bool:
@@ -206,7 +229,7 @@ class ESPPTaxSummary:
     shares: Decimal
     offering_price: Decimal
     purchase_price: Decimal
-    purchase_date_fmv: Decimal
+    fmv_at_purchase: Decimal  # Renamed from purchase_date_fmv
     
     # Sale details
     sale_price: Decimal
@@ -241,12 +264,19 @@ def calculate_espp_purchase(
     Returns:
         ESPPPurchase with calculated values
     """
+    # Calculate purchase price using lookback and discount
+    lookback_price = min(offering_price, purchase_date_fmv)
+    purchase_price = (lookback_price * (1 - discount_rate)).quantize(
+        Decimal("0.01"), rounding=ROUND_HALF_UP
+    )
+    
     return ESPPPurchase(
         offering_date=offering_date,
         purchase_date=purchase_date,
         shares_purchased=shares,
         offering_price=offering_price,
-        purchase_date_fmv=purchase_date_fmv,
+        purchase_price=purchase_price,
+        fmv_at_purchase=purchase_date_fmv,
         discount_rate=discount_rate,
     )
 
@@ -284,7 +314,7 @@ def analyze_espp_sale(
         shares=shares_sold,
         offering_price=purchase.offering_price,
         purchase_price=purchase.purchase_price,
-        purchase_date_fmv=purchase.purchase_date_fmv,
+        fmv_at_purchase=purchase.fmv_at_purchase,
         sale_price=sale_price,
         proceeds=sale.proceeds,
         ordinary_income=sale.ordinary_income,
@@ -292,6 +322,93 @@ def analyze_espp_sale(
         is_long_term=sale.is_long_term_capital_gain,
         total_gain=sale.total_gain,
     )
+
+
+def calculate_espp_sale(sale: ESPPSale) -> ESPPTaxSummary:
+    """
+    Calculate ESPP sale tax implications from an ESPPSale object.
+    
+    Compatibility wrapper for analyze_espp_sale.
+    
+    Args:
+        sale: ESPPSale object with all sale details
+        
+    Returns:
+        ESPPTaxSummary with complete analysis
+    """
+    return analyze_espp_sale(
+        purchase=sale.purchase,
+        sale_price=sale.sale_price,
+        sale_date=sale.sale_date,
+        shares_sold=sale.shares_sold,
+    )
+
+
+def compare_espp_strategies(
+    purchase: Optional[ESPPPurchase] = None,
+    current_price: Optional[Decimal] = None,
+    years_held: int = 3,
+) -> dict:
+    """
+    Compare different ESPP sale strategies.
+    
+    Args:
+        purchase: Original ESPP purchase (uses example if not provided)
+        current_price: Current stock price (uses example if not provided)
+        years_held: Years to project
+        
+    Returns:
+        Comparison of qualifying vs disqualifying disposition
+    """
+    from datetime import timedelta
+    
+    # Use example values if not provided
+    if purchase is None:
+        purchase = ESPPPurchase(
+            offering_date=date(2023, 1, 1),
+            purchase_date=date(2023, 6, 30),
+            shares_purchased=Decimal("100"),
+            offering_price=Decimal("100"),
+            purchase_price=Decimal("85"),
+            fmv_at_purchase=Decimal("120"),
+        )
+    if current_price is None:
+        current_price = Decimal("150")
+    
+    # Immediate/disqualifying sale (now)
+    disq_sale_date = purchase.purchase_date + timedelta(days=180)  # 6 months
+    disq = analyze_espp_sale(
+        purchase=purchase,
+        sale_price=current_price,
+        sale_date=disq_sale_date,
+    )
+    
+    # Qualifying sale (after holding period)
+    qual_sale_date = max(
+        purchase.offering_date + timedelta(days=731),  # >2yr from offering
+        purchase.purchase_date + timedelta(days=366),   # >1yr from purchase
+    )
+    qual = analyze_espp_sale(
+        purchase=purchase,
+        sale_price=current_price,
+        sale_date=qual_sale_date,
+    )
+    
+    return {
+        "immediate_sale": {
+            "ordinary_income": disq.ordinary_income,
+            "capital_gain": disq.capital_gain,
+            "is_long_term": disq.is_long_term,
+            "total_gain": disq.total_gain,
+        },
+        "qualifying_sale": {
+            "ordinary_income": qual.ordinary_income,
+            "capital_gain": qual.capital_gain,
+            "is_long_term": qual.is_long_term,
+            "total_gain": qual.total_gain,
+        },
+        "tax_savings_potential": disq.ordinary_income - qual.ordinary_income,
+    }
 
 
 # ============================================================
@@ -325,7 +442,7 @@ def espp_qualifying_example() -> dict:
         "scenario": "ESPP Qualifying Disposition",
         "shares": summary.shares,
         "offering_price": summary.offering_price,
-        "purchase_date_fmv": summary.purchase_date_fmv,
+        "fmv_at_purchase": summary.fmv_at_purchase,
         "purchase_price": summary.purchase_price,  # 85% of $100 = $85
         "sale_price": summary.sale_price,
         "disposition_type": summary.disposition_type.value,
@@ -369,7 +486,7 @@ def espp_disqualifying_example() -> dict:
         "scenario": "ESPP Disqualifying Disposition",
         "shares": summary.shares,
         "offering_price": summary.offering_price,
-        "purchase_date_fmv": summary.purchase_date_fmv,
+        "fmv_at_purchase": summary.fmv_at_purchase,
         "purchase_price": summary.purchase_price,
         "sale_price": summary.sale_price,
         "disposition_type": summary.disposition_type.value,
