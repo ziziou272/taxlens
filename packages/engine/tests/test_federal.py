@@ -63,9 +63,10 @@ class TestFederalTaxBrackets:
         """Typical tech employee: $200K W-2 + $100K RSU."""
         # $300,000 taxable income, married filing jointly
         tax = calculate_federal_tax(Decimal("300000"), FilingStatus.MARRIED_JOINTLY)
-        # Expected to be in 24-32% effective range
+        # Expected effective rate ~17-22% (brackets are progressive)
+        # At $300K MFJ: 10% up to $23,850, 12% to $96,950, 22% to $206,700, 24% to $300K
         effective_rate = tax / Decimal("300000")
-        assert Decimal("0.20") < effective_rate < Decimal("0.30")
+        assert Decimal("0.15") < effective_rate < Decimal("0.25")
 
 
 class TestLTCGTax:
