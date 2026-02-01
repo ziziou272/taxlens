@@ -9,13 +9,13 @@ from datetime import date
 from taxlens_engine.equity_espp import (
     ESPPPurchase,
     ESPPSale,
-    ESPPTaxResult,
-    DispositionType,
+    ESPPTaxSummary as ESPPTaxResult,
+    ESPPDispositionType as DispositionType,
     calculate_espp_sale,
+    compare_espp_strategies,
     espp_qualifying_example,
     espp_disqualifying_example,
-    espp_loss_example,
-    compare_espp_strategies,
+    espp_stock_dropped_example as espp_loss_example,
 )
 
 
@@ -353,7 +353,7 @@ class TestESPPHoldingPeriods:
             purchase=purchase,
         )
         
-        assert sale.days_from_offering == 731  # >730
+        assert sale.days_from_offering == 732  # >730 (leap year)
         
     def test_days_from_purchase(self):
         """Test calculation of days from purchase."""
@@ -376,7 +376,7 @@ class TestESPPHoldingPeriods:
         assert sale.days_from_purchase == 367  # >365
         
     def test_edge_case_exactly_2_years(self):
-        """Test edge case: exactly 2 years from offering (not qualifying)."""
+        """Test edge case: exactly 730 days from offering (not qualifying)."""
         purchase = ESPPPurchase(
             offering_date=date(2023, 1, 1),
             purchase_date=date(2023, 6, 30),
@@ -388,7 +388,7 @@ class TestESPPHoldingPeriods:
         
         # Exactly 730 days = not qualifying (needs >730)
         sale = ESPPSale(
-            sale_date=date(2025, 1, 1),
+            sale_date=date(2024, 12, 31),  # 730 days from 2023-01-01
             shares_sold=Decimal("100"),
             sale_price=Decimal("100"),
             purchase=purchase,
@@ -474,7 +474,7 @@ class TestESPPEdgeCases:
         
         result = calculate_espp_sale(sale)
         
-        assert result.shares_sold == Decimal("10.5")
+        assert result.shares == Decimal("10.5")
         
     def test_partial_sale(self):
         """Test selling only some shares."""
@@ -497,6 +497,6 @@ class TestESPPEdgeCases:
         
         result = calculate_espp_sale(sale)
         
-        assert result.shares_sold == Decimal("50")
+        assert result.shares == Decimal("50")
         # Ordinary income should be for 50 shares only
         assert result.ordinary_income == Decimal("1750.00")  # (120-85) × 50
