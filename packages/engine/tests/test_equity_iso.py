@@ -145,7 +145,7 @@ class TestISODispositionType:
         assert sale.disposition_type == ISODispositionType.DISQUALIFYING
     
     def test_boundary_exactly_one_year(self):
-        """Exactly 365 days from exercise is qualifying (for that requirement)."""
+        """Exactly 365 days from exercise is disqualifying (need >365)."""
         sale = calculate_iso_sale(
             shares=Decimal("100"),
             sale_price=Decimal("100"),
@@ -153,7 +153,7 @@ class TestISODispositionType:
             fmv_at_exercise=Decimal("50"),
             grant_date=date(2022, 1, 1),  # Need > 2 years
             exercise_date=date(2023, 6, 1),
-            sale_date=date(2024, 6, 1),  # Exactly 365 days - NOT qualifying (need >365)
+            sale_date=date(2024, 5, 31),  # Exactly 365 days - NOT qualifying (need >365)
         )
         
         # 365 days is NOT > 365, so disqualifying
