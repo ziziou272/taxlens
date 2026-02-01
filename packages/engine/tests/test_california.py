@@ -59,11 +59,11 @@ class TestCATaxBrackets:
     
     def test_single_moderate_income(self):
         """Single filer with moderate income."""
-        # $50,000 taxable income - should span multiple brackets
+        # $50,000 taxable income - spans 1%, 2%, 4%, 6% brackets
         tax = calculate_california_tax(Decimal("50000"), FilingStatus.SINGLE)
-        # CA has progressive rates from 1% to 9.3%
-        assert tax > Decimal("2000")
-        assert tax < Decimal("5000")
+        # Expected ~$1,577 based on CA 2025 brackets
+        assert tax > Decimal("1500")
+        assert tax < Decimal("2000")
     
     def test_single_high_income(self):
         """Single filer with high income reaching 9.3% bracket."""
@@ -90,16 +90,16 @@ class TestCATaxBrackets:
     def test_tech_employee_scenario_single(self):
         """Typical tech employee: $300K taxable, single."""
         tax = calculate_california_tax(Decimal("300000"), FilingStatus.SINGLE)
-        # Expected ~$28K-$32K CA tax
-        assert Decimal("25000") < tax < Decimal("35000")
+        # Expected ~$24K CA tax (9.3% bracket for most of income)
+        assert Decimal("23000") < tax < Decimal("26000")
     
     def test_tech_employee_scenario_married(self):
         """Typical tech employee: $420K taxable, married."""
         # $450K gross - $30K federal deduction = $420K federal taxable
         # For CA: $450K - $11K CA deduction = ~$439K CA taxable
         tax = calculate_california_tax(Decimal("420000"), FilingStatus.MARRIED_JOINTLY)
-        # Expected ~$35K-$42K CA tax
-        assert Decimal("33000") < tax < Decimal("45000")
+        # Expected ~$32K CA tax (9.3% bracket for most of income)
+        assert Decimal("30000") < tax < Decimal("35000")
 
 
 class TestMentalHealthServicesTax:
