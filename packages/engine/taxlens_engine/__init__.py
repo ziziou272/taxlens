@@ -22,6 +22,13 @@ from taxlens_engine.models import (
     TaxSummary,
     EquityGrant,
 )
+from taxlens_engine.california import (
+    calculate_california_tax,
+    calculate_mental_health_tax,
+    calculate_sdi,
+    get_ca_standard_deduction,
+    get_ca_marginal_rate,
+)
 
 __version__ = "0.1.0"
 __all__ = [
@@ -32,4 +39,10 @@ __all__ = [
     "TaxYear",
     "TaxSummary",
     "EquityGrant",
+    # California
+    "calculate_california_tax",
+    "calculate_mental_health_tax",
+    "calculate_sdi",
+    "get_ca_standard_deduction",
+    "get_ca_marginal_rate",
 ]
