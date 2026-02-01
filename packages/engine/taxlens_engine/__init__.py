@@ -37,6 +37,13 @@ from taxlens_engine.calculator import (
     calculate_taxes,
     format_tax_summary,
 )
+from taxlens_engine.california import (
+    calculate_california_tax,
+    calculate_mental_health_tax,
+    calculate_sdi,
+    get_ca_standard_deduction,
+    get_ca_marginal_rate,
+)
 
 __version__ = "0.1.0"
 __all__ = [
