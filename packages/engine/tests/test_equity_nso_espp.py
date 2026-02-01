@@ -410,7 +410,9 @@ class TestESPPExamples:
         """Test stock dropped example."""
         result = espp_stock_dropped_example()
         
-        # No ordinary income when sold at loss
-        assert result["ordinary_income"] == Decimal("0")
-        # Capital loss
+        # Disqualifying disposition: ordinary income = discount at purchase
+        # = (FMV at purchase - purchase price) × shares = (100 - 85) × 100 = 1500
+        assert result["ordinary_income"] == Decimal("1500.00")
+        # Capital loss = (sale price - FMV at purchase) × shares
+        # = (70 - 100) × 100 = -3000
         assert result["capital_gain"] < Decimal("0")
