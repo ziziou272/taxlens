@@ -8,6 +8,17 @@ class Settings(BaseSettings):
     debug: bool = False
     database_url: str = "sqlite+aiosqlite:///./taxlens.db"
 
+    # Plaid
+    plaid_client_id: str = ""
+    plaid_secret: str = ""
+    plaid_env: str = "sandbox"
+
+    # Anthropic (document OCR + AI advisor)
+    anthropic_api_key: str = ""
+
+    # File uploads
+    upload_dir: str = "./uploads"
+
     model_config = {"env_prefix": "TAXLENS_"}
 
 
