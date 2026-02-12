@@ -62,6 +62,6 @@ async def test_alert_check(client):
 
 
 @pytest.mark.asyncio
-async def test_document_upload_stub(client):
+async def test_document_upload_requires_file(client):
     r = await client.post("/api/documents/upload")
-    assert r.status_code == 501
+    assert r.status_code == 422  # file field required
