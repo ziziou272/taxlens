@@ -32,9 +32,7 @@ class ScenariosScreen extends ConsumerWidget {
             onChanged: (_) {},
           ),
           const SizedBox(height: 16),
-          ...scenarios
-              .map((s) => ScenarioComparison(scenario: s))
-              .toList(),
+          ...scenarios.map((s) => ScenarioComparison(scenario: s)),
         ],
       ),
     );

@@ -15,6 +15,10 @@ _$TaxResultImpl _$$TaxResultImplFromJson(Map<String, dynamic> json) =>
       incomeBreakdown: (json['incomeBreakdown'] as Map<String, dynamic>).map(
         (k, e) => MapEntry(k, (e as num).toDouble()),
       ),
+      taxableIncome: (json['taxableIncome'] as num?)?.toDouble() ?? 0,
+      deductionUsed: (json['deductionUsed'] as num?)?.toDouble() ?? 0,
+      socialSecurityTax: (json['socialSecurityTax'] as num?)?.toDouble() ?? 0,
+      medicareTax: (json['medicareTax'] as num?)?.toDouble() ?? 0,
     );
 
 Map<String, dynamic> _$$TaxResultImplToJson(_$TaxResultImpl instance) =>
@@ -28,4 +32,8 @@ Map<String, dynamic> _$$TaxResultImplToJson(_$TaxResultImpl instance) =>
       'totalWithheld': instance.totalWithheld,
       'amountOwed': instance.amountOwed,
       'incomeBreakdown': instance.incomeBreakdown,
+      'taxableIncome': instance.taxableIncome,
+      'deductionUsed': instance.deductionUsed,
+      'socialSecurityTax': instance.socialSecurityTax,
+      'medicareTax': instance.medicareTax,
     };

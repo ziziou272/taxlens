@@ -29,6 +29,10 @@ mixin _$TaxResult {
   double get totalWithheld => throw _privateConstructorUsedError;
   double get amountOwed => throw _privateConstructorUsedError;
   Map<String, double> get incomeBreakdown => throw _privateConstructorUsedError;
+  double get taxableIncome => throw _privateConstructorUsedError;
+  double get deductionUsed => throw _privateConstructorUsedError;
+  double get socialSecurityTax => throw _privateConstructorUsedError;
+  double get medicareTax => throw _privateConstructorUsedError;
 
   /// Serializes this TaxResult to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -54,7 +58,11 @@ abstract class $TaxResultCopyWith<$Res> {
       double marginalRate,
       double totalWithheld,
       double amountOwed,
-      Map<String, double> incomeBreakdown});
+      Map<String, double> incomeBreakdown,
+      double taxableIncome,
+      double deductionUsed,
+      double socialSecurityTax,
+      double medicareTax});
 }
 
 /// @nodoc
@@ -81,6 +89,10 @@ class _$TaxResultCopyWithImpl<$Res, $Val extends TaxResult>
     Object? totalWithheld = null,
     Object? amountOwed = null,
     Object? incomeBreakdown = null,
+    Object? taxableIncome = null,
+    Object? deductionUsed = null,
+    Object? socialSecurityTax = null,
+    Object? medicareTax = null,
   }) {
     return _then(_value.copyWith(
       totalIncome: null == totalIncome
@@ -119,6 +131,22 @@ class _$TaxResultCopyWithImpl<$Res, $Val extends TaxResult>
           ? _value.incomeBreakdown
           : incomeBreakdown // ignore: cast_nullable_to_non_nullable
               as Map<String, double>,
+      taxableIncome: null == taxableIncome
+          ? _value.taxableIncome
+          : taxableIncome // ignore: cast_nullable_to_non_nullable
+              as double,
+      deductionUsed: null == deductionUsed
+          ? _value.deductionUsed
+          : deductionUsed // ignore: cast_nullable_to_non_nullable
+              as double,
+      socialSecurityTax: null == socialSecurityTax
+          ? _value.socialSecurityTax
+          : socialSecurityTax // ignore: cast_nullable_to_non_nullable
+              as double,
+      medicareTax: null == medicareTax
+          ? _value.medicareTax
+          : medicareTax // ignore: cast_nullable_to_non_nullable
+              as double,
     ) as $Val);
   }
 }
@@ -140,7 +168,11 @@ abstract class _$$TaxResultImplCopyWith<$Res>
       double marginalRate,
       double totalWithheld,
       double amountOwed,
-      Map<String, double> incomeBreakdown});
+      Map<String, double> incomeBreakdown,
+      double taxableIncome,
+      double deductionUsed,
+      double socialSecurityTax,
+      double medicareTax});
 }
 
 /// @nodoc
@@ -165,6 +197,10 @@ class __$$TaxResultImplCopyWithImpl<$Res>
     Object? totalWithheld = null,
     Object? amountOwed = null,
     Object? incomeBreakdown = null,
+    Object? taxableIncome = null,
+    Object? deductionUsed = null,
+    Object? socialSecurityTax = null,
+    Object? medicareTax = null,
   }) {
     return _then(_$TaxResultImpl(
       totalIncome: null == totalIncome
@@ -203,6 +239,22 @@ class __$$TaxResultImplCopyWithImpl<$Res>
           ? _value._incomeBreakdown
           : incomeBreakdown // ignore: cast_nullable_to_non_nullable
               as Map<String, double>,
+      taxableIncome: null == taxableIncome
+          ? _value.taxableIncome
+          : taxableIncome // ignore: cast_nullable_to_non_nullable
+              as double,
+      deductionUsed: null == deductionUsed
+          ? _value.deductionUsed
+          : deductionUsed // ignore: cast_nullable_to_non_nullable
+              as double,
+      socialSecurityTax: null == socialSecurityTax
+          ? _value.socialSecurityTax
+          : socialSecurityTax // ignore: cast_nullable_to_non_nullable
+              as double,
+      medicareTax: null == medicareTax
+          ? _value.medicareTax
+          : medicareTax // ignore: cast_nullable_to_non_nullable
+              as double,
     ));
   }
 }
@@ -219,7 +271,11 @@ class _$TaxResultImpl implements _TaxResult {
       required this.marginalRate,
       required this.totalWithheld,
       required this.amountOwed,
-      required final Map<String, double> incomeBreakdown})
+      required final Map<String, double> incomeBreakdown,
+      this.taxableIncome = 0,
+      this.deductionUsed = 0,
+      this.socialSecurityTax = 0,
+      this.medicareTax = 0})
       : _incomeBreakdown = incomeBreakdown;
 
   factory _$TaxResultImpl.fromJson(Map<String, dynamic> json) =>
@@ -250,8 +306,21 @@ class _$TaxResultImpl implements _TaxResult {
   }
 
   @override
+  @JsonKey()
+  final double taxableIncome;
+  @override
+  @JsonKey()
+  final double deductionUsed;
+  @override
+  @JsonKey()
+  final double socialSecurityTax;
+  @override
+  @JsonKey()
+  final double medicareTax;
+
+  @override
   String toString() {
-    return 'TaxResult(totalIncome: $totalIncome, federalTax: $federalTax, stateTax: $stateTax, totalTax: $totalTax, effectiveRate: $effectiveRate, marginalRate: $marginalRate, totalWithheld: $totalWithheld, amountOwed: $amountOwed, incomeBreakdown: $incomeBreakdown)';
+    return 'TaxResult(totalIncome: $totalIncome, federalTax: $federalTax, stateTax: $stateTax, totalTax: $totalTax, effectiveRate: $effectiveRate, marginalRate: $marginalRate, totalWithheld: $totalWithheld, amountOwed: $amountOwed, incomeBreakdown: $incomeBreakdown, taxableIncome: $taxableIncome, deductionUsed: $deductionUsed, socialSecurityTax: $socialSecurityTax, medicareTax: $medicareTax)';
   }
 
   @override
@@ -276,7 +345,15 @@ class _$TaxResultImpl implements _TaxResult {
             (identical(other.amountOwed, amountOwed) ||
                 other.amountOwed == amountOwed) &&
             const DeepCollectionEquality()
-                .equals(other._incomeBreakdown, _incomeBreakdown));
+                .equals(other._incomeBreakdown, _incomeBreakdown) &&
+            (identical(other.taxableIncome, taxableIncome) ||
+                other.taxableIncome == taxableIncome) &&
+            (identical(other.deductionUsed, deductionUsed) ||
+                other.deductionUsed == deductionUsed) &&
+            (identical(other.socialSecurityTax, socialSecurityTax) ||
+                other.socialSecurityTax == socialSecurityTax) &&
+            (identical(other.medicareTax, medicareTax) ||
+                other.medicareTax == medicareTax));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -291,7 +368,11 @@ class _$TaxResultImpl implements _TaxResult {
       marginalRate,
       totalWithheld,
       amountOwed,
-      const DeepCollectionEquality().hash(_incomeBreakdown));
+      const DeepCollectionEquality().hash(_incomeBreakdown),
+      taxableIncome,
+      deductionUsed,
+      socialSecurityTax,
+      medicareTax);
 
   /// Create a copy of TaxResult
   /// with the given fields replaced by the non-null parameter values.
@@ -319,7 +400,11 @@ abstract class _TaxResult implements TaxResult {
       required final double marginalRate,
       required final double totalWithheld,
       required final double amountOwed,
-      required final Map<String, double> incomeBreakdown}) = _$TaxResultImpl;
+      required final Map<String, double> incomeBreakdown,
+      final double taxableIncome,
+      final double deductionUsed,
+      final double socialSecurityTax,
+      final double medicareTax}) = _$TaxResultImpl;
 
   factory _TaxResult.fromJson(Map<String, dynamic> json) =
       _$TaxResultImpl.fromJson;
@@ -342,6 +427,14 @@ abstract class _TaxResult implements TaxResult {
   double get amountOwed;
   @override
   Map<String, double> get incomeBreakdown;
+  @override
+  double get taxableIncome;
+  @override
+  double get deductionUsed;
+  @override
+  double get socialSecurityTax;
+  @override
+  double get medicareTax;
 
   /// Create a copy of TaxResult
   /// with the given fields replaced by the non-null parameter values.
