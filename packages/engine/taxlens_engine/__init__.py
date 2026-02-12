@@ -33,6 +33,21 @@ from taxlens_engine.california import (
     get_ca_standard_deduction,
     get_ca_marginal_rate,
 )
+from taxlens_engine.new_york import (
+    calculate_ny_tax,
+    calculate_nyc_tax,
+    calculate_yonkers_surcharge,
+    calculate_mctmt,
+    get_ny_standard_deduction,
+    get_ny_marginal_rate,
+    calculate_ny_total_tax,
+    calculate_ny_rsu_sourcing,
+)
+from taxlens_engine.washington import (
+    calculate_wa_income_tax,
+    calculate_wa_capital_gains_tax,
+    WaCapitalGainsExemption,
+)
 from taxlens_engine.calculator import (
     calculate_taxes,
     format_tax_summary,
@@ -59,6 +74,19 @@ __all__ = [
     "calculate_sdi",
     "get_ca_standard_deduction",
     "get_ca_marginal_rate",
+    # New York
+    "calculate_ny_tax",
+    "calculate_nyc_tax",
+    "calculate_yonkers_surcharge",
+    "calculate_mctmt",
+    "get_ny_standard_deduction",
+    "get_ny_marginal_rate",
+    "calculate_ny_total_tax",
+    "calculate_ny_rsu_sourcing",
+    # Washington
+    "calculate_wa_income_tax",
+    "calculate_wa_capital_gains_tax",
+    "WaCapitalGainsExemption",
     # Calculator
     "calculate_taxes",
     "format_tax_summary",
