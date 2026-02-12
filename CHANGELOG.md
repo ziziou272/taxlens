@@ -5,6 +5,31 @@ All notable changes to TaxLens will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-02-12
+
+### Added
+
+#### Supabase Auth Integration (Phases 1-3)
+- **JWT Authentication**: Supabase JWT validation with HS256, audience verification, expiry checks
+- **Auth Dependencies**: `require_auth`, `optional_auth`, `get_current_user` — all in `app/dependencies.py`
+- **Backward Compatibility**: When no `TAXLENS_SUPABASE_JWT_SECRET` is set, falls back to anonymous mode (MVP still works)
+- **User Management Endpoints**:
+  - `GET /api/users/me` — get or auto-create user profile
+  - `PATCH /api/users/me` — update profile (name, email)
+  - `DELETE /api/users/me` — delete user and ALL associated data (CCPA compliance)
+  - `GET /api/users/me/sessions` — session info (managed by Supabase)
+  - `GET /api/users/me/audit-log` — user's audit trail
+- **Route Protection**: Protected endpoints (documents, accounts, scenarios save, alerts profile, advisor) require auth; public endpoints (health, calculate, alert check, scenario types/run) remain open
+- **Data Isolation**: All DB queries scoped by `user_id`; added `user_id` column to Scenario, Alert, EquityGrant models
+- **Audit Logging**: `AuditLog` model tracks login, profile updates, document uploads, Plaid links, account deletions with IP address
+- **Security Headers Middleware**: CSP, X-Frame-Options, X-Content-Type-Options, X-XSS-Protection, Referrer-Policy
+- **Rate Limiting**: `slowapi` integrated for rate limiting support
+- **74 tests passing** including auth flows, user CRUD, data isolation, security headers
+
+### Dependencies Added
+- `python-jose[cryptography]>=3.3.0` — JWT decoding
+- `slowapi>=0.1.9` — rate limiting
+
 ## [0.3.0] - 2025-02-12
 
 ### Added

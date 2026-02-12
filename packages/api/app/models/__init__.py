@@ -6,5 +6,6 @@ from app.models.document import Document
 from app.models.alert import Alert
 from app.models.scenario import Scenario
 from app.models.plaid_item import PlaidItem
+from app.models.audit_log import AuditLog
 
-__all__ = ["User", "TaxProfile", "EquityGrant", "Document", "Alert", "Scenario", "PlaidItem"]
+__all__ = ["User", "TaxProfile", "EquityGrant", "Document", "Alert", "Scenario", "PlaidItem", "AuditLog"]

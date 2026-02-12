@@ -9,6 +9,7 @@ class Scenario(Base):
     __tablename__ = "scenarios"
 
     id: Mapped[str] = mapped_column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    user_id: Mapped[str] = mapped_column(String, index=True, default="anonymous")
     profile_id: Mapped[str] = mapped_column(ForeignKey("tax_profiles.id"), nullable=True)
     name: Mapped[str] = mapped_column(String)
     scenario_type: Mapped[str] = mapped_column(String)

@@ -1,7 +1,8 @@
 """AI Tax Advisor endpoints."""
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 
+from app.dependencies import require_auth
 from app.services import advisor_service
 
 router = APIRouter()
@@ -22,15 +23,15 @@ class AskRequest(BaseModel):
 
 
 @router.post("/explain")
-async def explain(body: ExplainRequest):
+async def explain(body: ExplainRequest, user_id: str = Depends(require_auth)):
     return await advisor_service.explain(body.tax_context, body.question)
 
 
 @router.post("/recommend")
-async def recommend(body: RecommendRequest):
+async def recommend(body: RecommendRequest, user_id: str = Depends(require_auth)):
     return await advisor_service.recommend(body.tax_context)
 
 
 @router.post("/ask")
-async def ask(body: AskRequest):
+async def ask(body: AskRequest, user_id: str = Depends(require_auth)):
     return await advisor_service.ask(body.tax_context, body.question)

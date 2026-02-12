@@ -9,6 +9,7 @@ class EquityGrant(Base):
     __tablename__ = "equity_grants"
 
     id: Mapped[str] = mapped_column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    user_id: Mapped[str] = mapped_column(String, index=True, default="anonymous")
     profile_id: Mapped[str] = mapped_column(ForeignKey("tax_profiles.id"))
     grant_type: Mapped[str] = mapped_column(String)  # rsu, iso, nso, espp
     shares: Mapped[int] = mapped_column(Integer, default=0)

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models/tax_result.dart';
 import 'api_endpoints.dart';
@@ -11,18 +12,45 @@ class ApiException implements Exception {
   String toString() => message;
 }
 
+/// Callback invoked when a 401 response is received.
+typedef OnUnauthorized = void Function();
+
 class ApiClient {
-  ApiClient({String baseUrl = 'https://taxlens.ziziou.com'})
-      : _dio = Dio(BaseOptions(
+  ApiClient({
+    String baseUrl = 'https://taxlens.ziziou.com',
+    this.supabaseAvailable = false,
+    this.onUnauthorized,
+  }) : _dio = Dio(BaseOptions(
           baseUrl: baseUrl,
           connectTimeout: const Duration(seconds: 10),
           receiveTimeout: const Duration(seconds: 10),
           headers: {'Content-Type': 'application/json'},
         )) {
     _dio.interceptors.add(LogInterceptor(responseBody: true));
+
+    // Auth interceptor: attach JWT & handle 401s
+    _dio.interceptors.add(InterceptorsWrapper(
+      onRequest: (options, handler) {
+        if (supabaseAvailable) {
+          final session = Supabase.instance.client.auth.currentSession;
+          if (session != null) {
+            options.headers['Authorization'] = 'Bearer ${session.accessToken}';
+          }
+        }
+        handler.next(options);
+      },
+      onError: (error, handler) {
+        if (error.response?.statusCode == 401) {
+          onUnauthorized?.call();
+        }
+        handler.next(error);
+      },
+    ));
   }
 
   final Dio _dio;
+  final bool supabaseAvailable;
+  OnUnauthorized? onUnauthorized;
 
   Dio get dio => _dio;
 

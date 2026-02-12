@@ -9,6 +9,7 @@ class Alert(Base):
     __tablename__ = "alerts"
 
     id: Mapped[str] = mapped_column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    user_id: Mapped[str] = mapped_column(String, index=True, default="anonymous")
     profile_id: Mapped[str] = mapped_column(ForeignKey("tax_profiles.id"))
     severity: Mapped[str] = mapped_column(String)  # info, warning, critical
     category: Mapped[str] = mapped_column(String)

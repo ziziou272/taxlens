@@ -1,4 +1,5 @@
 """Application settings via pydantic-settings."""
+from typing import Optional
 from pydantic_settings import BaseSettings
 
 
@@ -18,6 +19,17 @@ class Settings(BaseSettings):
 
     # File uploads
     upload_dir: str = "./uploads"
+
+    # Supabase Auth
+    supabase_url: str = ""
+    supabase_anon_key: str = ""
+    supabase_service_key: str = ""
+    supabase_jwt_secret: str = ""
+
+    @property
+    def auth_enabled(self) -> bool:
+        """Auth is enabled when JWT secret is configured."""
+        return bool(self.supabase_jwt_secret)
 
     model_config = {"env_prefix": "TAXLENS_"}
 
