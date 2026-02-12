@@ -179,7 +179,7 @@ class _MfaSetupScreenState extends ConsumerState<MfaSetupScreen> {
                             child: CircularProgressIndicator(strokeWidth: 2))
                         : const Text('Verify & Enable'),
                   ),
-                ],
+                ]),
               ),
             ),
           ],

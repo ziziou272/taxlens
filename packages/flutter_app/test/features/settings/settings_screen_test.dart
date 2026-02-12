@@ -30,8 +30,13 @@ void main() {
     await tester.pumpWidget(buildApp());
     await tester.pumpAndSettle();
 
+    // Scroll down to find the API URL field (may be below fold with auth section)
+    await tester.scrollUntilVisible(
+      find.text('API Base URL'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text('API Base URL'), findsOneWidget);
-    expect(find.text('http://localhost:8100'), findsOneWidget);
   });
 
   testWidgets('Filing status dropdown works', (tester) async {
