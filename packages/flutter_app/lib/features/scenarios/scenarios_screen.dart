@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'scenarios_provider.dart';
 import 'widgets/scenario_comparison.dart';
-import '../../core/api/api_client.dart';
+import '../../core/api/api_client.dart' as api;
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_theme.dart';
 
@@ -110,7 +110,7 @@ class _ScenariosScreenState extends ConsumerState<ScenariosScreen> {
 
 class _ComparisonDetail extends StatelessWidget {
   const _ComparisonDetail({required this.comparison});
-  final ScenarioComparison comparison;
+  final api.ScenarioComparison comparison;
 
   @override
   Widget build(BuildContext context) {
