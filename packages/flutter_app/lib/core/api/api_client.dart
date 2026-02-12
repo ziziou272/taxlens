@@ -12,7 +12,7 @@ class ApiException implements Exception {
 }
 
 class ApiClient {
-  ApiClient({String baseUrl = 'https://taxlens-api.ziziou.com'})
+  ApiClient({String baseUrl = 'https://taxlens.ziziou.com'})
       : _dio = Dio(BaseOptions(
           baseUrl: baseUrl,
           connectTimeout: const Duration(seconds: 10),
