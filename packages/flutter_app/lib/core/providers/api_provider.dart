@@ -6,4 +6,4 @@ final apiClientProvider = Provider<ApiClient>((ref) {
   return ApiClient(baseUrl: baseUrl);
 });
 
-final apiBaseUrlProvider = StateProvider<String>((ref) => 'http://localhost:8100');
+final apiBaseUrlProvider = StateProvider<String>((ref) => 'https://taxlens-api.ziziou.com');
