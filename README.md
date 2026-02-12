@@ -4,197 +4,154 @@
 
 > Year-round proactive tax planning, not just annual filing.
 
-## 🎯 What is TaxLens?
+## What is TaxLens?
 
-TaxLens is a **tax planning tool** (not a tax filing tool) designed for tech employees with equity compensation ($200K-$1M+). It helps you:
+TaxLens is a **tax planning tool** (not a tax filing tool) designed for tech employees with equity compensation ($200K–$1M+). It helps you:
 
-- **Avoid surprises** - Detect underwithholding before April hits
-- **Optimize equity** - RSU/ISO/NSO/ESPP timing and strategies
-- **Plan ahead** - What-if scenarios for major decisions
-- **Stay alert** - 73+ automated tax red flags
+- **Avoid surprises** – Detect underwithholding before April hits
+- **Optimize equity** – RSU/ISO/NSO/ESPP timing and strategies
+- **Plan ahead** – What-if scenarios for major decisions
+- **Stay alert** – 73+ automated tax red flags
 
-## ⚠️ Strategic Decision: Planning First, Filing Later
+## ✅ Current Status
 
-### Why NOT build a filing tool (yet)?
+### Engine (v0.2.0+)
+- Federal tax calculator (2025 rules, all brackets, AMT, FICA, NIIT, LTCG)
+- State tax: California, New York (+ NYC + Yonkers), Washington (capital gains)
+- Multi-state sourcing (183-day rule, RSU allocation, part-year moves)
+- Equity compensation: RSU, ISO, NSO, ESPP
+- Data importers: Fidelity, Schwab, E\*Trade, Robinhood CSV
+- 73+ automated red flag alerts
+- What-if scenario engine (23 scenario types)
+- Cross-validated against IRS reference values (20 scenarios, 0 discrepancies)
+- 520+ tests, 82%+ coverage
 
-| Risk | Impact |
-|------|--------|
-| IRS e-file certification | Complex, expensive process |
-| Liability for errors | One mistake = thousands in penalties |
-| Annual tax code changes | Endless maintenance burden |
-| Multi-state complexity | 50 states × changing rules |
+### API (v0.1.0)
+- FastAPI backend with 11+ endpoints
+- Tax calculation, alerts, what-if scenarios
+- SQLAlchemy async + SQLite
+- Pydantic v2 request/response schemas
 
-### Why Planning is the Sweet Spot
+### Coming Soon
+- Flutter cross-platform app (iOS + Android + Web)
+- Plaid financial data integration
+- Document OCR (W-2, 1099 via Claude Vision)
+- AI tax advisor (Claude API)
 
-1. **Low risk** - Projections don't file anything
-2. **High value** - TurboTax sucks at year-round planning
-3. **Validates engine** - Battle-test calculations before filing
-4. **Market gap** - No good equity-focused planning tools exist
-
-**Bottom line:** Use TaxLens for planning, TurboTax/CPA for filing. Maybe add filing in v2+ after engine is proven.
-
-## 🏗️ Architecture
+## Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                      TaxLens Architecture                    │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  ┌──────────────────┐     ┌────────────────────────────────┐│
-│  │   AI Layer       │     │   Calculation Engine           ││
-│  │   (Claude API)   │     │   (Deterministic Rules)        ││
-│  │                  │     │                                ││
-│  │   • Q&A          │     │   • Federal tax brackets       ││
-│  │   • Explanations │     │   • AMT calculations           ││
-│  │   • Strategies   │     │   • State tax rules            ││
-│  │   • Summaries    │     │   • Equity comp (RSU/ISO/NSO)  ││
-│  │                  │     │   • Capital gains              ││
-│  └────────┬─────────┘     └──────────────┬─────────────────┘│
-│           │                              │                   │
-│           └──────────────┬───────────────┘                   │
-│                          ▼                                   │
-│              ┌───────────────────────┐                       │
-│              │     TaxLens App       │                       │
-│              │  • Dashboard          │                       │
-│              │  • Red Flag Alerts    │                       │
-│              │  • What-If Scenarios  │                       │
-│              │  • Data Import        │                       │
-│              └───────────────────────┘                       │
-│                          │                                   │
-│                          ▼                                   │
-│              ┌───────────────────────┐                       │
-│              │   Data Sources        │                       │
-│              │  • Fidelity/Schwab    │                       │
-│              │  • Plaid (bank link)  │                       │
-│              │  • Manual entry       │                       │
-│              └───────────────────────┘                       │
-└─────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────┐
+│                       TAXLENS ARCHITECTURE                          │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  ┌─────────────────────────────────────────────────────────────┐   │
+│  │                     FLUTTER APP (Client)                     │   │
+│  │  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐        │   │
+│  │  │Dashboard│  │Scenarios│  │ Alerts  │  │Documents│        │   │
+│  │  └────┬────┘  └────┬────┘  └────┬────┘  └────┬────┘        │   │
+│  │       └────────────┴────────────┴────────────┘              │   │
+│  │                    State Management (Riverpod)               │   │
+│  │                    Local Cache (Drift/SQLite)                │   │
+│  └────────────────────────────┬────────────────────────────────┘   │
+│                               │ HTTPS                               │
+│  ┌────────────────────────────┼────────────────────────────────┐   │
+│  │                      PYTHON BACKEND                          │   │
+│  │                            │                                 │   │
+│  │           ┌────────────────┴────────────────┐                │   │
+│  │           │       FastAPI Application       │                │   │
+│  │           │  /api/tax  /api/alerts           │                │   │
+│  │           │  /api/scenarios  /api/advisor    │                │   │
+│  │           └────────────────┬────────────────┘                │   │
+│  │                            │                                 │   │
+│  │     ┌──────────┬───────────┼───────────┬──────────┐          │   │
+│  │     │ Tax      │ Alert     │ What-If   │ Doc      │          │   │
+│  │     │ Engine   │ Engine    │ Engine    │ Extract  │          │   │
+│  │     └──────────┘───────────┘───────────┘──────────┘          │   │
+│  │                            │                                 │   │
+│  │              Database (SQLite → Supabase)                    │   │
+│  └────────────────────────────┼────────────────────────────────┘   │
+│                               │                                     │
+│  ┌────────────────────────────┼────────────────────────────────┐   │
+│  │                    EXTERNAL SERVICES                         │   │
+│  │     ┌────────┐  ┌────────┐  ┌──────────┐  ┌────────┐       │   │
+│  │     │ Plaid  │  │ Claude │  │ Supabase │  │ Sentry │       │   │
+│  │     │  API   │  │  API   │  │  (opt)   │  │ (opt)  │       │   │
+│  │     └────────┘  └────────┘  └──────────┘  └────────┘       │   │
+│  └─────────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────────┘
 ```
 
 **Key Insight:** AI does NOT do calculations. The calculation engine is 100% deterministic rules. AI only explains, summarizes, and suggests.
 
-## 📋 Implementation Phases
+## Quick Start
 
-### Phase 1: Core Engine (Weeks 1-4)
-- [ ] Federal tax bracket calculator (2025 rules)
-- [ ] AMT calculation engine
-- [ ] California state tax
-- [ ] Basic W-2 + RSU scenario
+### Engine CLI
+```bash
+cd packages/engine
+pip install -e ".[dev]"
+taxlens calculate --income 300000 --filing-status single --state CA
+```
 
-### Phase 2: Equity Intelligence (Weeks 5-8)
-- [ ] RSU vesting projections
-- [ ] ISO exercise + AMT interaction
-- [ ] NSO exercise timing
-- [ ] ESPP disposition analysis
+### API Server
+```bash
+cd packages/api
+pip install -e ".[dev]"
+uvicorn app.main:app --reload --port 8100
+# Docs at http://localhost:8100/docs
+```
 
-### Phase 3: Data Integration (Weeks 9-12)
-- [ ] Fidelity CSV import
-- [ ] Schwab CSV import
-- [ ] Plaid connection (optional)
-- [ ] Manual entry forms
-
-### Phase 4: Red Flag System (Weeks 13-16)
-- [ ] Underwithholding alerts
-- [ ] AMT trigger warnings
-- [ ] WA capital gains threshold
-- [ ] Wash sale detection
-
-### Phase 5: What-If Engine (Weeks 17-20)
-- [ ] Interactive sliders
-- [ ] Scenario comparison
-- [ ] Tax optimization suggestions
-- [ ] Year-end planning mode
-
-### Phase 6: Polish & Launch (Weeks 21-24)
-- [ ] UI/UX refinement
-- [ ] Security audit
-- [ ] Beta testing
-- [ ] Public launch
-
-## 🛠️ Tech Stack
-
-| Layer | Technology | Rationale |
-|-------|------------|-----------|
-| **Frontend** | Next.js + Tailwind | Modern React, great DX |
-| **Backend** | Python (FastAPI) | Tax-Calculator is Python, easy integration |
-| **Database** | PostgreSQL + Supabase | Secure, scalable |
-| **AI** | Claude API | Best for explanations, uses their API |
-| **Calculations** | Python (Decimal) | Exact arithmetic, no floating point errors |
-| **Data Import** | Plaid + CSV parsers | Cover all brokerages |
-
-## 📁 Project Structure
+## Project Structure
 
 ```
 taxlens/
-├── README.md
-├── DECISIONS.md          # Architecture Decision Records
-├── docs/
-│   ├── research/         # Existing research from aiOutput
-│   ├── specs/            # Technical specifications
-│   └── api/              # API documentation
 ├── packages/
-│   ├── engine/           # Tax calculation engine (Python)
-│   ├── web/              # Next.js frontend
-│   └── shared/           # Shared types/utils
-├── scripts/
-│   └── tax-data/         # IRS data scrapers
-└── tests/
-    ├── engine/           # Calculation tests
-    └── integration/      # End-to-end tests
+│   ├── engine/          # Python tax calculation engine
+│   │   ├── taxlens_engine/
+│   │   │   ├── federal.py
+│   │   │   ├── california.py
+│   │   │   ├── new_york.py
+│   │   │   ├── washington.py
+│   │   │   ├── multi_state.py
+│   │   │   ├── equity_*.py
+│   │   │   ├── red_flags*.py
+│   │   │   ├── what_if.py
+│   │   │   └── importers/
+│   │   └── tests/
+│   └── api/             # FastAPI backend
+│       ├── app/
+│       │   ├── routers/
+│       │   ├── services/
+│       │   ├── models/
+│       │   └── schemas/
+│       └── tests/
+├── docs/
+├── CHANGELOG.md
+├── DECISIONS.md
+└── ROADMAP.md
 ```
 
-## 🚀 Getting Started
+## Tech Stack
 
-```bash
-# Clone
-git clone https://github.com/ziziou272/taxlens.git
-cd taxlens
+| Layer | Technology |
+|-------|-----------|
+| Engine | Python 3.11+, Decimal arithmetic |
+| API | FastAPI, SQLAlchemy 2.0 async, Pydantic v2 |
+| Frontend | Flutter 3.x (coming) |
+| Database | SQLite → Supabase |
+| AI | Claude API (explanations + OCR) |
+| Data | Plaid (financial aggregation) |
 
-# Install engine dependencies
-cd packages/engine
-pip install -e .
+## ⚠️ Strategic Decision: Planning First, Filing Later
 
-# Run tests
-pytest
+TaxLens is a **planning tool**, not a filing tool. Filing brings IRS certification, liability for errors, and endless maintenance. Planning is low-risk, high-value, and fills a real market gap — no good equity-focused planning tools exist today.
 
-# Start dev server
-cd ../web
-npm install
-npm run dev
-```
+**Bottom line:** Use TaxLens for planning, TurboTax/CPA for filing. Maybe add filing in v2+ after engine is proven.
 
-## 📊 Key Metrics for Success
+## License
 
-| Metric | Target | How to Measure |
-|--------|--------|----------------|
-| Calculation accuracy | 99.99% | Compare vs TurboTax/CPA results |
-| False positive alerts | <5% | User feedback on red flags |
-| User time saved | 10+ hrs/year | Survey + analytics |
-| Tax savings identified | $1000+/user | Track what-if suggestions |
-
-## 🔒 Security & Privacy
-
-- All financial data encrypted at rest (AES-256)
-- No data sold or shared
-- SOC 2 compliance (future)
-- User can export/delete all data
-
-## 📚 Research & Prior Art
-
-See `/docs/research/` for comprehensive research including:
-- Competitor analysis (TurboTax, H&R Block, etc.)
-- Open source options (PSLmodels/Tax-Calculator)
-- AI/LLM limitations for tax calculations
-- Academic papers on tax optimization
-
-## 📜 License
-
-MIT (engine) + Proprietary (future commercial features)
-
-## 🤝 Contributing
-
-This is currently a personal project. Contributions welcome after initial MVP.
+MIT
 
 ---
 
-**Disclaimer:** TaxLens is a planning tool, not tax advice. Always consult a CPA for filing. We are not responsible for any tax decisions made based on this tool.
+**Disclaimer:** TaxLens is a planning tool, not tax advice. Always consult a CPA for filing.

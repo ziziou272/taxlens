@@ -5,6 +5,47 @@ All notable changes to TaxLens will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2025-02-12
+
+### Added
+
+#### FastAPI Backend (PR #17)
+- Full FastAPI backend with 11+ REST endpoints
+- Tax calculation, alerts, and what-if scenario APIs
+- SQLAlchemy 2.0 async with SQLite persistence
+- Pydantic v2 request/response schemas
+- API docs served at `/docs` (Swagger UI)
+
+#### Multi-State Income Sourcing (PR #16)
+- 183-day residency threshold rule
+- RSU income allocation across states
+- Part-year move support with date-based sourcing
+- Day-count tracking for remote work across state lines
+
+#### Engine Cross-Validation Suite (PR #15)
+- 20 comprehensive tax scenarios validated against IRS reference values
+- 0 discrepancies across all scenarios
+- Covers single, married, HoH filing statuses
+- AMT, NIIT, LTCG, and equity edge cases validated
+
+#### New York State Tax Module (PR #14)
+- New York state income tax (all brackets)
+- NYC resident tax
+- Yonkers resident/nonresident surcharge
+- Integration with multi-state sourcing
+
+#### Washington State Tax Module (PR #13)
+- Washington capital gains tax (7% on gains > $270K)
+- Long-term capital gains only
+- Proper exemption threshold handling
+
+### Improved
+- Test count increased to 520+ with 82%+ coverage
+- Red flag count now at 73+ automated alerts
+- What-if engine expanded to 23 scenario types
+
+---
+
 ## [0.2.0] - 2025-02-01
 
 ### Added
@@ -173,16 +214,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 | Version | Date | Highlights |
 |---------|------|------------|
+| 0.3.0 | 2025-02-12 | NY/WA state tax, multi-state sourcing, cross-validation, FastAPI backend |
 | 0.2.0 | 2025-02-01 | Data integration, enhanced red flags, what-if engine |
 | 0.1.0 | 2025-01-15 | Core engine, equity calculations, basic red flags |
 
 ## Coming Soon
-
-### v0.3.0 (Planned)
-- Web interface (Next.js)
-- User authentication
-- Persistent profiles
-- Document upload
 
 ### v0.4.0 (Planned)
 - Plaid integration for automatic data import

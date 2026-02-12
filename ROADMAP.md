@@ -1,264 +1,92 @@
 # TaxLens Roadmap
 
-## 🎯 2026 Q1: MVP - Core Planning Engine
+## ✅ Completed
 
-### Milestone 1: Federal Calculator (2 weeks)
+### Engine v0.1.0 – Core Engine (Jan 2025)
+- [x] Federal tax calculator (2025 brackets, all filing statuses)
+- [x] AMT calculation engine
+- [x] FICA (SS + Medicare + Additional Medicare)
+- [x] NIIT (Net Investment Income Tax)
+- [x] LTCG preferential rates
+- [x] California state tax (9 brackets + mental health services tax)
+- [x] Equity modules: RSU, ISO, NSO, ESPP
+- [x] Data importers: Fidelity, Schwab CSV
+- [x] Basic red flag system
 
-**Goal:** Calculate federal income tax for a W-2 employee with RSUs.
+### Engine v0.2.0 – Data Integration & What-If (Feb 2025)
+- [x] E\*Trade CSV importer
+- [x] Robinhood CSV importer
+- [x] Manual entry data models
+- [x] Enhanced red flags: estimated payments, wash sales, state nexus
+- [x] What-if scenario engine (23 scenario types)
+- [x] Integration tests
 
-```
-Week 1:
-├── Set up Python project structure
-├── Implement 2025 federal tax brackets
-├── Standard deduction logic
-├── Basic W-2 income handling
-└── Write comprehensive tests
-
-Week 2:
-├── AMT calculation engine
-├── Long-term capital gains rates
-├── Short-term capital gains (ordinary income)
-├── RSU income integration
-└── Test against TurboTax scenarios
-```
-
-**Deliverable:** CLI tool that calculates federal tax for simple equity scenarios.
-
-```bash
-$ taxlens calculate \
-    --income 300000 \
-    --rsu-vested 150000 \
-    --rsu-sold 50000 \
-    --sale-gain 20000 \
-    --filing-status married_jointly
-
-Federal Tax Summary (2025)
-─────────────────────────────
-Gross Income:        $450,000
-RSU Income:          $150,000
-Capital Gains (LT):   $20,000
-─────────────────────────────
-Taxable Income:      $420,000
-Federal Tax:         $102,347
-Effective Rate:         22.7%
-Marginal Rate:           35%
-─────────────────────────────
-AMT Check:            No AMT triggered
-```
-
-### Milestone 2: California State Tax (1 week)
-
-**Goal:** Add CA state tax calculations.
-
-```
-Week 3:
-├── CA tax brackets (9.3% - 13.3%)
-├── CA standard deduction
-├── CA SDI/UI considerations
-├── Mental health services tax (1% > $1M)
-└── Integration tests
-```
-
-### Milestone 3: Equity Module (2 weeks)
-
-**Goal:** Handle RSU, ISO, NSO, ESPP with proper tax treatment.
-
-```
-Week 4:
-├── RSU vesting income (W-2, supplemental withholding)
-├── RSU sale (cost basis = FMV at vest)
-├── ISO exercise (no regular tax, triggers AMT)
-├── ISO disqualifying disposition
-└── Test common scenarios
-
-Week 5:
-├── NSO exercise (bargain element = ordinary income)
-├── NSO sale (cost basis = exercise price + bargain)
-├── ESPP purchase (no tax at purchase if qualified)
-├── ESPP sale (qualified vs disqualifying)
-└── Multi-company scenarios
-```
-
-### Milestone 4: Data Import (2 weeks)
-
-**Goal:** Import actual brokerage data.
-
-```
-Week 6:
-├── Fidelity CSV parser (W-2, 1099-B)
-├── Schwab CSV parser
-├── E*Trade CSV parser
-├── Validate against sample data
-└── Error handling & warnings
-
-Week 7:
-├── Plaid integration (optional)
-├── Manual entry forms
-├── Data reconciliation view
-└── "Import from TurboTax" export
-```
-
-### Milestone 5: Basic Web UI (2 weeks)
-
-**Goal:** Simple web interface for the engine.
-
-```
-Week 8:
-├── Next.js project setup
-├── Dashboard layout
-├── Data entry forms
-├── Tax summary view
-└── Basic styling (Tailwind)
-
-Week 9:
-├── File upload for CSV
-├── Tax breakdown visualization
-├── Year-over-year comparison
-├── Mobile responsive
-└── Deploy to Vercel
-```
-
-**Q1 Deliverable:** Working web app that imports brokerage data and shows tax projections.
+### Engine v0.3.0 – Multi-State & Validation (Feb 2025)
+- [x] Washington state capital gains tax (PR #13)
+- [x] New York state tax + NYC + Yonkers (PR #14)
+- [x] Cross-validation suite: 20 scenarios, 0 discrepancies (PR #15)
+- [x] Multi-state income sourcing: 183-day rule, RSU allocation (PR #16)
+- [x] FastAPI backend with 11+ endpoints (PR #17)
+- [x] 520+ tests, 82%+ coverage
 
 ---
 
-## 🚨 2026 Q2: Red Flag System
+## 🚧 In Progress
 
-### Milestone 6: Underwithholding Alerts (2 weeks)
+### 2025 Q1: Flutter App MVP
+- [ ] Flutter project setup (Riverpod, go_router)
+- [ ] Dashboard screen – tax summary overview
+- [ ] Data entry forms – W-2, equity grants
+- [ ] Tax breakdown visualization
+- [ ] Alerts list view
+- [ ] What-if scenario UI with sliders
 
-```
-├── Compare YTD withholding vs projected liability
-├── "You're $X short" alert
-├── Estimated payment calculator
-├── Safe harbor calculation (110% of prior year)
-└── Quarterly payment reminders
-```
-
-### Milestone 7: AMT Alerts (1 week)
-
-```
-├── Detect ISO exercises that trigger AMT
-├── Calculate AMT exposure
-├── "If you exercise X more ISOs, AMT triggers"
-├── AMT credit carryforward tracking
-└── Optimization suggestions
-```
-
-### Milestone 8: Capital Gains Alerts (1 week)
-
-```
-├── WA 7% threshold tracking ($270K in 2025)
-├── Short-term vs long-term optimization
-├── "Hold X more days for LTCG treatment"
-├── Tax-loss harvesting opportunities
-└── Wash sale warnings
-```
-
-### Milestone 9: Multi-State Alerts (2 weeks)
-
-```
-├── Remote work source income tracking
-├── "You worked X days in state Y"
-├── Multi-state filing requirements
-├── Estimated payments by state
-└── Moving scenarios
-```
+### 2025 Q1: API Enhancements
+- [ ] User authentication (Supabase Auth)
+- [ ] Persistent user profiles
+- [ ] Document upload endpoint
 
 ---
 
-## 📊 2026 Q3: What-If Engine
+## 📋 Planned
 
-### Milestone 10: Interactive Scenarios (3 weeks)
+### 2025 Q2: Data & Intelligence
+- [ ] Plaid integration for automatic brokerage data import
+- [ ] Document OCR: W-2, 1099-B via Claude Vision
+- [ ] AI tax advisor: Claude API for plain-English explanations
+- [ ] Real-time stock price fetching
+- [ ] Tax-loss harvesting suggestions
 
-```
-├── Slider-based income adjustments
-├── "What if I exercise X ISOs this year vs next?"
-├── "What if I sell RSUs now vs after LTCG?"
-├── Roth conversion optimizer
-├── Retirement contribution optimizer (401k, IRA, backdoor)
-```
+### 2025 Q3: Polish & Beta
+- [ ] Year-end planning mode (Oct–Dec checklist)
+- [ ] Security audit
+- [ ] Performance optimization
+- [ ] Beta launch (20–50 users)
 
-### Milestone 11: Year-End Planning Mode (2 weeks)
-
-```
-├── October-December planning view
-├── Checklist of year-end moves
-├── Deadline reminders
-├── "Last chance to..." alerts
-├── Next year projections
-```
-
-### Milestone 12: AI Explanations (2 weeks)
-
-```
-├── Claude API integration
-├── "Explain my tax situation"
-├── "What does AMT mean for me?"
-├── Strategy summaries in plain English
-├── Personalized recommendations
-```
+### 2025 Q4: Public Launch
+- [ ] Landing page & onboarding flow
+- [ ] Stripe billing ($99/yr or $299/yr premium)
+- [ ] Help docs & FAQ
+- [ ] Public launch
 
 ---
 
-## 🚀 2026 Q4: Polish & Growth
+## 🔮 Future (2026+)
 
-### Milestone 13: Beta Launch (4 weeks)
-
-```
-├── Security audit
-├── Performance optimization
-├── Error monitoring (Sentry)
-├── Analytics (privacy-respecting)
-├── Invite beta testers (20-50 users)
-```
-
-### Milestone 14: Public Launch (4 weeks)
-
-```
-├── Landing page
-├── Pricing page ($99/year or $299/year premium)
-├── Stripe integration
-├── Onboarding flow
-├── Help docs & FAQ
-```
-
----
-
-## 🔮 Future (2027+)
-
-### Maybe: Tax Filing
-
-Once the calculation engine is battle-tested with real users:
-- Research IRS e-file certification
-- Partner with existing filing provider?
-- Or stay in planning lane (less liability)
-
-### Multi-State Full Support
-
-- All 50 states
-- International (UK, Canada, etc.)
-- Expat scenarios
-
-### Business/1099 Support
-
-- Freelancer income
-- Estimated quarterly payments
-- Business deductions
-
-### Team/Family
-
-- Shared household view
-- Tax preparer mode
-- Multi-user access
+- **Tax filing** – Once engine is battle-tested, explore IRS e-file certification
+- **All 50 states** – Full multi-state coverage
+- **International** – UK, Canada, expat scenarios
+- **Business/1099** – Freelancer income, business deductions
+- **Team/Family** – Shared household view, tax preparer mode
 
 ---
 
 ## 📈 Success Metrics
 
-| Metric | Q1 Target | Q2 Target | Q4 Target |
-|--------|-----------|-----------|-----------|
-| Calculation accuracy | 95% | 99% | 99.9% |
-| Active users | 10 (friends) | 100 (beta) | 1000 (launch) |
-| NPS | N/A | 50+ | 60+ |
-| Alerts triggered | N/A | 500+ | 5000+ |
-| Tax savings identified | N/A | $50K+ | $500K+ |
+| Metric | Current | Q2 Target | Launch Target |
+|--------|---------|-----------|---------------|
+| Calculation accuracy | 99.9%+ (cross-validated) | 99.9% | 99.99% |
+| Test coverage | 82%+ | 90% | 95% |
+| Active users | — | 100 (beta) | 1,000 |
+| Alerts available | 73+ | 100+ | 150+ |
+| States supported | 3 (CA, NY, WA) | 5+ | 15+ |
