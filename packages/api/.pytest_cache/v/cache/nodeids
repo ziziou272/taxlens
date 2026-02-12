@@ -1,0 +1,13 @@
+[
+  "tests/test_health.py::test_health",
+  "tests/test_scenarios.py::test_alert_check",
+  "tests/test_scenarios.py::test_document_upload_stub",
+  "tests/test_scenarios.py::test_scenario_run",
+  "tests/test_scenarios.py::test_scenario_save",
+  "tests/test_scenarios.py::test_scenario_types",
+  "tests/test_tax.py::test_high_income_rsu",
+  "tests/test_tax.py::test_married_filing",
+  "tests/test_tax.py::test_no_state_tax",
+  "tests/test_tax.py::test_simple_w2",
+  "tests/test_tax.py::test_withholding_gap"
+]
