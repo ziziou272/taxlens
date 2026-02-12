@@ -1,34 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'core/providers/settings_provider.dart';
 import 'features/dashboard/dashboard_screen.dart';
 import 'features/alerts/alerts_screen.dart';
 import 'features/scenarios/scenarios_screen.dart';
 import 'features/settings/settings_screen.dart';
 import 'features/tax_breakdown/tax_breakdown_screen.dart';
+import 'features/onboarding/onboarding_screen.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
-final router = GoRouter(
-  navigatorKey: _rootNavigatorKey,
-  initialLocation: '/',
-  routes: [
-    ShellRoute(
-      builder: (context, state, child) => _ScaffoldWithNav(child: child),
-      routes: [
-        GoRoute(path: '/', builder: (_, __) => const DashboardScreen()),
-        GoRoute(path: '/alerts', builder: (_, __) => const AlertsScreen()),
-        GoRoute(
-            path: '/scenarios',
-            builder: (_, __) => const ScenariosScreen()),
-        GoRoute(
-            path: '/settings', builder: (_, __) => const SettingsScreen()),
-      ],
-    ),
-    GoRoute(
-        path: '/breakdown',
-        builder: (_, __) => const TaxBreakdownScreen()),
-  ],
-);
+final routerProvider = Provider<GoRouter>((ref) {
+  final settings = ref.watch(settingsProvider);
+
+  return GoRouter(
+    navigatorKey: _rootNavigatorKey,
+    initialLocation: settings.onboardingComplete ? '/' : '/onboarding',
+    routes: [
+      GoRoute(
+        path: '/onboarding',
+        builder: (_, __) => const OnboardingScreen(),
+      ),
+      ShellRoute(
+        builder: (context, state, child) => _ScaffoldWithNav(child: child),
+        routes: [
+          GoRoute(path: '/', builder: (_, __) => const DashboardScreen()),
+          GoRoute(path: '/alerts', builder: (_, __) => const AlertsScreen()),
+          GoRoute(
+              path: '/scenarios',
+              builder: (_, __) => const ScenariosScreen()),
+          GoRoute(
+              path: '/settings', builder: (_, __) => const SettingsScreen()),
+        ],
+      ),
+      GoRoute(
+          path: '/breakdown',
+          builder: (_, __) => const TaxBreakdownScreen()),
+    ],
+  );
+});
 
 class _ScaffoldWithNav extends StatelessWidget {
   const _ScaffoldWithNav({required this.child});
@@ -43,8 +54,7 @@ class _ScaffoldWithNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final location =
-        GoRouterState.of(context).uri.toString();
+    final location = GoRouterState.of(context).uri.toString();
     return Scaffold(
       body: child,
       bottomNavigationBar: NavigationBar(
