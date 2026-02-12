@@ -10,7 +10,7 @@ final taxResultProvider =
 class TaxResultNotifier extends AsyncNotifier<TaxResult?> {
   @override
   Future<TaxResult?> build() async {
-    return null;
+    return null; // No result until user triggers calculation
   }
 
   Future<void> calculate() async {
@@ -20,6 +20,7 @@ class TaxResultNotifier extends AsyncNotifier<TaxResult?> {
 
     state = await AsyncValue.guard(() async {
       final result = await api.calculateTax(settings.toTaxInput());
+      // Update income breakdown with user input info
       return TaxResult(
         totalIncome: result.totalIncome,
         federalTax: result.federalTax,
@@ -46,10 +47,12 @@ class TaxResultNotifier extends AsyncNotifier<TaxResult?> {
   }
 }
 
+/// Summary of alert counts derived from alerts provider.
 class AlertSummary {
   final int critical;
   final int warning;
   final int info;
+
   const AlertSummary({this.critical = 0, this.warning = 0, this.info = 0});
 }
 

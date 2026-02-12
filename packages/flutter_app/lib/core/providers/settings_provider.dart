@@ -75,7 +75,7 @@ class SettingsNotifier extends StateNotifier<UserSettings> {
   }
 
   void setFilingStatus(String v) => state = state.copyWith(filingStatus: v);
-  void setUserState(String v) => state = state.copyWith(state: v);
+  void setState(String v) => state = state.copyWith(state: v);
   void setWages(double v) => state = state.copyWith(wages: v);
   void setRsuIncome(double v) => state = state.copyWith(rsuIncome: v);
   void setCapitalGainsShort(double v) =>

@@ -4,12 +4,14 @@ import '../../core/models/scenario.dart';
 import '../../core/providers/api_provider.dart';
 import '../../core/providers/settings_provider.dart';
 
+/// Fetches available scenario types from the API.
 final scenarioTypesProvider =
     FutureProvider<List<ScenarioType>>((ref) async {
   final api = ref.read(apiClientProvider);
   return api.getScenarioTypes();
 });
 
+/// Runs a scenario comparison.
 final scenarioResultProvider = AsyncNotifierProvider<ScenarioResultNotifier,
     ScenarioComparison?>(ScenarioResultNotifier.new);
 
@@ -46,6 +48,7 @@ class ScenarioResultNotifier extends AsyncNotifier<ScenarioComparison?> {
   }
 }
 
+/// Legacy provider for backward compatibility — provides static list.
 final scenariosProvider = Provider<List<Scenario>>((ref) {
   final result = ref.watch(scenarioResultProvider);
   return result.when(

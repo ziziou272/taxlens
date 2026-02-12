@@ -71,7 +71,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               DropdownMenuItem(value: 'FL', child: Text('Florida')),
             ],
             onChanged: (v) =>
-                ref.read(settingsProvider.notifier).setUserState(v!),
+                ref.read(settingsProvider.notifier).setState(v!),
           ),
           const SizedBox(height: 16),
           TextFormField(

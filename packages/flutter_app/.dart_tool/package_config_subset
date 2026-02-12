@@ -94,6 +94,10 @@ convert
 3.4
 file:///root/.pub-cache/hosted/pub.dev/convert-3.1.2/
 file:///root/.pub-cache/hosted/pub.dev/convert-3.1.2/lib/
+cross_file
+3.3
+file:///root/.pub-cache/hosted/pub.dev/cross_file-0.3.4+2/
+file:///root/.pub-cache/hosted/pub.dev/cross_file-0.3.4+2/lib/
 crypto
 3.4
 file:///root/.pub-cache/hosted/pub.dev/crypto-3.0.7/
@@ -130,6 +134,10 @@ file
 3.0
 file:///root/.pub-cache/hosted/pub.dev/file-7.0.1/
 file:///root/.pub-cache/hosted/pub.dev/file-7.0.1/lib/
+file_picker
+3.4
+file:///root/.pub-cache/hosted/pub.dev/file_picker-8.3.7/
+file:///root/.pub-cache/hosted/pub.dev/file_picker-8.3.7/lib/
 fixnum
 3.1
 file:///root/.pub-cache/hosted/pub.dev/fixnum-1.1.1/
@@ -142,6 +150,10 @@ flutter_lints
 3.5
 file:///root/.pub-cache/hosted/pub.dev/flutter_lints-5.0.0/
 file:///root/.pub-cache/hosted/pub.dev/flutter_lints-5.0.0/lib/
+flutter_plugin_android_lifecycle
+3.6
+file:///root/.pub-cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.29/
+file:///root/.pub-cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.29/lib/
 flutter_riverpod
 2.17
 file:///root/.pub-cache/hosted/pub.dev/flutter_riverpod-2.6.1/

@@ -44,10 +44,10 @@ class _ScenariosScreenState extends ConsumerState<ScenariosScreen> {
               value: types.any((t) => t.typeId == _selectedType)
                   ? _selectedType
                   : (types.isNotEmpty ? types.first.typeId : null),
-              items: [
-                for (final t in types)
-                  DropdownMenuItem(value: t.typeId, child: Text(t.name)),
-              ],
+              items: types
+                  .map((t) => DropdownMenuItem(
+                      value: t.typeId, child: Text(t.name)))
+                  .toList(),
               onChanged: (v) => setState(() => _selectedType = v!),
             ),
             loading: () => const LinearProgressIndicator(),
@@ -86,8 +86,7 @@ class _ScenariosScreenState extends ConsumerState<ScenariosScreen> {
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
                 : const Icon(Icons.compare_arrows),
-            label:
-                Text(resultAsync.isLoading ? 'Running...' : 'Run Scenario'),
+            label: Text(resultAsync.isLoading ? 'Running...' : 'Run Scenario'),
           ),
           const SizedBox(height: 24),
           if (resultAsync.hasError)
@@ -129,8 +128,7 @@ class _ComparisonDetail extends StatelessWidget {
                     ?.copyWith(fontWeight: FontWeight.bold)),
             const SizedBox(height: 12),
             _Row('Baseline Tax', fmt.format(comparison.baseline.totalTax)),
-            _Row('Alternative Tax',
-                fmt.format(comparison.alternative.totalTax)),
+            _Row('Alternative Tax', fmt.format(comparison.alternative.totalTax)),
             const Divider(),
             _Row(
               'Tax Savings',

@@ -33,8 +33,7 @@ class DashboardScreen extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.calculate_outlined,
-                      size: 64,
-                      color: Theme.of(context).colorScheme.primary),
+                      size: 64, color: Theme.of(context).colorScheme.primary),
                   const SizedBox(height: 16),
                   Text('Enter your income to get started',
                       style: Theme.of(context).textTheme.titleMedium),

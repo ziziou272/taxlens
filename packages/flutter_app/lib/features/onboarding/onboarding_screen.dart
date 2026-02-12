@@ -36,8 +36,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   void _finish() {
     final notifier = ref.read(settingsProvider.notifier);
     notifier.setFilingStatus(_filingStatus);
-    notifier.setUserState(_state);
+    notifier.setState(_state);
 
+    // Set approximate wages from income range
     final wages = switch (_incomeRange) {
       '0-50k' => 35000.0,
       '50k-100k' => 75000.0,

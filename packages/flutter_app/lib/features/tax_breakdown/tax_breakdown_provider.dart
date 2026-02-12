@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../dashboard/dashboard_provider.dart';
 
+/// Derives detailed tax breakdown lines from the tax result.
 final taxBreakdownProvider =
     Provider<List<Map<String, dynamic>>>((ref) {
   final resultAsync = ref.watch(taxResultProvider);

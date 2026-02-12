@@ -21,8 +21,7 @@ class AlertsScreen extends ConsumerWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.check_circle_outline,
-                      size: 64, color: Colors.green),
+                  Icon(Icons.check_circle_outline, size: 64, color: Colors.green),
                   SizedBox(height: 16),
                   Text('No alerts. Calculate your taxes first.'),
                 ],
@@ -48,9 +47,7 @@ class AlertsScreen extends ConsumerWidget {
                 onPressed: () {
                   final result = ref.read(taxResultProvider).valueOrNull;
                   if (result != null) {
-                    ref
-                        .read(alertsResultProvider.notifier)
-                        .checkAlerts(result);
+                    ref.read(alertsResultProvider.notifier).checkAlerts(result);
                   }
                 },
                 icon: const Icon(Icons.refresh),

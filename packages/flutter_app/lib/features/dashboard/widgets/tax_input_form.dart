@@ -24,26 +24,12 @@ class _TaxInputFormState extends ConsumerState<TaxInputForm> {
   void initState() {
     super.initState();
     final s = ref.read(settingsProvider);
-    _wagesCtrl = TextEditingController(
-        text: s.wages > 0 ? s.wages.toStringAsFixed(0) : '');
-    _rsuCtrl = TextEditingController(
-        text: s.rsuIncome > 0 ? s.rsuIncome.toStringAsFixed(0) : '');
-    _stGainsCtrl = TextEditingController(
-        text: s.capitalGainsShort > 0
-            ? s.capitalGainsShort.toStringAsFixed(0)
-            : '');
-    _ltGainsCtrl = TextEditingController(
-        text: s.capitalGainsLong > 0
-            ? s.capitalGainsLong.toStringAsFixed(0)
-            : '');
-    _fedWithheldCtrl = TextEditingController(
-        text: s.federalWithheld > 0
-            ? s.federalWithheld.toStringAsFixed(0)
-            : '');
-    _stateWithheldCtrl = TextEditingController(
-        text: s.stateWithheld > 0
-            ? s.stateWithheld.toStringAsFixed(0)
-            : '');
+    _wagesCtrl = TextEditingController(text: s.wages > 0 ? s.wages.toStringAsFixed(0) : '');
+    _rsuCtrl = TextEditingController(text: s.rsuIncome > 0 ? s.rsuIncome.toStringAsFixed(0) : '');
+    _stGainsCtrl = TextEditingController(text: s.capitalGainsShort > 0 ? s.capitalGainsShort.toStringAsFixed(0) : '');
+    _ltGainsCtrl = TextEditingController(text: s.capitalGainsLong > 0 ? s.capitalGainsLong.toStringAsFixed(0) : '');
+    _fedWithheldCtrl = TextEditingController(text: s.federalWithheld > 0 ? s.federalWithheld.toStringAsFixed(0) : '');
+    _stateWithheldCtrl = TextEditingController(text: s.stateWithheld > 0 ? s.stateWithheld.toStringAsFixed(0) : '');
   }
 
   @override
@@ -92,18 +78,11 @@ class _TaxInputFormState extends ConsumerState<TaxInputForm> {
             value: settings.filingStatus,
             items: const [
               DropdownMenuItem(value: 'single', child: Text('Single')),
-              DropdownMenuItem(
-                  value: 'married_jointly',
-                  child: Text('Married Filing Jointly')),
-              DropdownMenuItem(
-                  value: 'married_separately',
-                  child: Text('Married Filing Separately')),
-              DropdownMenuItem(
-                  value: 'head_of_household',
-                  child: Text('Head of Household')),
+              DropdownMenuItem(value: 'married_jointly', child: Text('Married Filing Jointly')),
+              DropdownMenuItem(value: 'married_separately', child: Text('Married Filing Separately')),
+              DropdownMenuItem(value: 'head_of_household', child: Text('Head of Household')),
             ],
-            onChanged: (v) =>
-                ref.read(settingsProvider.notifier).setFilingStatus(v!),
+            onChanged: (v) => ref.read(settingsProvider.notifier).setFilingStatus(v!),
           ),
           const SizedBox(height: 12),
           DropdownButtonFormField<String>(
@@ -117,25 +96,20 @@ class _TaxInputFormState extends ConsumerState<TaxInputForm> {
               DropdownMenuItem(value: 'NY', child: Text('New York')),
               DropdownMenuItem(value: 'WA', child: Text('Washington')),
             ],
-            onChanged: (v) =>
-                ref.read(settingsProvider.notifier).setUserState(v!),
+            onChanged: (v) => ref.read(settingsProvider.notifier).setState(v!),
           ),
           const SizedBox(height: 12),
           _CurrencyField(controller: _wagesCtrl, label: 'W-2 Wages'),
           const SizedBox(height: 12),
           _CurrencyField(controller: _rsuCtrl, label: 'RSU Income'),
           const SizedBox(height: 12),
-          _CurrencyField(
-              controller: _stGainsCtrl, label: 'Short-Term Capital Gains'),
+          _CurrencyField(controller: _stGainsCtrl, label: 'Short-Term Capital Gains'),
           const SizedBox(height: 12),
-          _CurrencyField(
-              controller: _ltGainsCtrl, label: 'Long-Term Capital Gains'),
+          _CurrencyField(controller: _ltGainsCtrl, label: 'Long-Term Capital Gains'),
           const SizedBox(height: 12),
-          _CurrencyField(
-              controller: _fedWithheldCtrl, label: 'Federal Withheld YTD'),
+          _CurrencyField(controller: _fedWithheldCtrl, label: 'Federal Withheld YTD'),
           const SizedBox(height: 12),
-          _CurrencyField(
-              controller: _stateWithheldCtrl, label: 'State Withheld YTD'),
+          _CurrencyField(controller: _stateWithheldCtrl, label: 'State Withheld YTD'),
           const SizedBox(height: 24),
           FilledButton.icon(
             onPressed: isLoading ? null : _calculate,
