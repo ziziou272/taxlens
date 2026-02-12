@@ -1,0 +1,14 @@
+app = "taxlens-api"
+primary_region = "sea"
+
+[build]
+  dockerfile = "packages/api/Dockerfile"
+
+[http_service]
+  internal_port = 8100
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+
+[env]
+  PORT = "8100"

@@ -148,6 +148,54 @@ TaxLens is a **planning tool**, not a filing tool. Filing brings IRS certificati
 
 **Bottom line:** Use TaxLens for planning, TurboTax/CPA for filing. Maybe add filing in v2+ after engine is proven.
 
+## 🚀 Deployment
+
+### API (FastAPI)
+
+**Option A — Render (one-click):**
+1. Fork/connect this repo on [Render](https://render.com)
+2. Use the `packages/api/render.yaml` blueprint
+3. Set environment variables: `ANTHROPIC_API_KEY`, `PLAID_CLIENT_ID`, `PLAID_SECRET`
+
+**Option B — Fly.io:**
+```bash
+fly launch          # uses fly.toml at repo root
+fly secrets set ANTHROPIC_API_KEY=... PLAID_CLIENT_ID=... PLAID_SECRET=...
+fly deploy
+```
+
+**Option C — Docker:**
+```bash
+docker build -f packages/api/Dockerfile -t taxlens-api .
+docker run -p 8100:8100 --env-file .env taxlens-api
+```
+
+### Flutter Web (ziziou.com/taxlens)
+
+```bash
+cd packages/flutter_app
+chmod +x deploy_web.sh
+./deploy_web.sh
+# Copy build/web/ contents to /var/www/taxlens/ on your server
+# Add packages/flutter_app/nginx.conf snippet to your nginx config
+```
+
+Or use the Docker approach:
+```bash
+docker build -f packages/flutter_app/Dockerfile.web -t taxlens-web .
+```
+
+### Environment Variables
+
+See `.env.example` for all configuration options.
+
+### CI/CD
+
+GitHub Actions runs on every push/PR to `master`:
+- **engine-tests** — Python engine unit tests
+- **api-tests** — FastAPI endpoint tests (depends on engine)
+- **flutter-tests** — Flutter analyze + test
+
 ## License
 
 MIT
