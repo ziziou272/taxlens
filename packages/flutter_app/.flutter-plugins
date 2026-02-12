@@ -1,4 +1,6 @@
 # This is a generated file; do not edit or check into version control.
+file_picker=/root/.pub-cache/hosted/pub.dev/file_picker-8.3.7/
+flutter_plugin_android_lifecycle=/root/.pub-cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.29/
 flutter_secure_storage=/root/.pub-cache/hosted/pub.dev/flutter_secure_storage-9.2.4/
 flutter_secure_storage_linux=/root/.pub-cache/hosted/pub.dev/flutter_secure_storage_linux-1.2.3/
 flutter_secure_storage_macos=/root/.pub-cache/hosted/pub.dev/flutter_secure_storage_macos-3.1.3/

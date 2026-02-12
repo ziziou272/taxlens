@@ -1,40 +1,39 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../core/api/api_client.dart';
 import '../../core/models/alert.dart';
+import '../../core/providers/api_provider.dart';
+import '../dashboard/dashboard_provider.dart';
 
+/// Converts API alerts to the Alert model for display.
 final alertsProvider = Provider<List<Alert>>((ref) {
-  return const [
-    Alert(
-      id: '1',
-      title: 'Estimated tax underpayment',
-      description:
-          'You may owe \$12,630 at filing. Consider increasing withholding or making estimated payments.',
-      priority: AlertPriority.critical,
-    ),
-    Alert(
-      id: '2',
-      title: 'RSU vesting tax impact',
-      description:
-          'Your RSU vesting pushed you into the 32% bracket. Supplemental withholding may be insufficient.',
-      priority: AlertPriority.critical,
-    ),
-    Alert(
-      id: '3',
-      title: 'Capital gains harvesting opportunity',
-      description:
-          'You have unrealized losses that could offset \$8,200 in capital gains.',
-      priority: AlertPriority.warning,
-    ),
-    Alert(
-      id: '4',
-      title: 'State tax nexus',
-      description: 'Remote work in multiple states may create filing obligations.',
-      priority: AlertPriority.warning,
-    ),
-    Alert(
-      id: '5',
-      title: '401(k) contribution room',
-      description: 'You have \$4,500 remaining in 401(k) contribution room for 2024.',
-      priority: AlertPriority.info,
-    ),
-  ];
+  final result = ref.watch(alertsResultProvider);
+  return result.when(
+    data: (r) {
+      if (r == null) return [];
+      return r.alerts.asMap().entries.map((e) {
+        final a = e.value;
+        return Alert(
+          id: '${e.key}',
+          title: a.title,
+          description: a.message,
+          priority: _toPriority(a.severity),
+        );
+      }).toList();
+    },
+    loading: () => [],
+    error: (_, __) => [],
+  );
+});
+
+AlertPriority _toPriority(String severity) => switch (severity) {
+      'critical' => AlertPriority.critical,
+      'warning' => AlertPriority.warning,
+      _ => AlertPriority.info,
+    };
+
+/// Provider for dismissing an alert.
+final dismissAlertProvider =
+    FutureProvider.family<void, String>((ref, alertId) async {
+  final api = ref.read(apiClientProvider);
+  await api.dismissAlert(alertId);
 });

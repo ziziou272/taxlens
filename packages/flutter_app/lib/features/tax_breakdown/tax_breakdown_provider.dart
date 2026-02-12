@@ -1,21 +1,36 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../dashboard/dashboard_provider.dart';
 
+/// Derives detailed tax breakdown lines from the tax result.
 final taxBreakdownProvider =
     Provider<List<Map<String, dynamic>>>((ref) {
-  return [
-    {'label': 'Gross Income', 'amount': 285000.0, 'indent': 0},
-    {'label': 'W-2 Salary', 'amount': 185000.0, 'indent': 1},
-    {'label': 'RSU Vesting', 'amount': 62000.0, 'indent': 1},
-    {'label': 'Capital Gains', 'amount': 28000.0, 'indent': 1},
-    {'label': 'Other Income', 'amount': 10000.0, 'indent': 1},
-    {'label': 'Adjustments', 'amount': -3000.0, 'indent': 0},
-    {'label': 'AGI', 'amount': 282000.0, 'indent': 0},
-    {'label': 'Standard Deduction', 'amount': -14600.0, 'indent': 0},
-    {'label': 'Taxable Income', 'amount': 267400.0, 'indent': 0},
-    {'label': 'Federal Tax', 'amount': 52430.0, 'indent': 0},
-    {'label': 'State Tax (CA)', 'amount': 18200.0, 'indent': 0},
-    {'label': 'Total Tax', 'amount': 70630.0, 'indent': 0},
-    {'label': 'Total Withheld', 'amount': -58000.0, 'indent': 0},
-    {'label': 'Amount Owed', 'amount': 12630.0, 'indent': 0},
-  ];
+  final resultAsync = ref.watch(taxResultProvider);
+
+  return resultAsync.when(
+    data: (result) {
+      if (result == null) return _mockBreakdown;
+      return [
+        {'label': 'Gross Income', 'amount': result.totalIncome, 'indent': 0},
+        ...result.incomeBreakdown.entries
+            .map((e) => {'label': e.key, 'amount': e.value, 'indent': 1}),
+        {'label': 'Standard Deduction', 'amount': -result.deductionUsed, 'indent': 0},
+        {'label': 'Taxable Income', 'amount': result.taxableIncome, 'indent': 0},
+        {'label': 'Federal Tax', 'amount': result.federalTax, 'indent': 0},
+        if (result.socialSecurityTax > 0)
+          {'label': 'Social Security', 'amount': result.socialSecurityTax, 'indent': 1},
+        if (result.medicareTax > 0)
+          {'label': 'Medicare', 'amount': result.medicareTax, 'indent': 1},
+        {'label': 'State Tax', 'amount': result.stateTax, 'indent': 0},
+        {'label': 'Total Tax', 'amount': result.totalTax, 'indent': 0},
+        {'label': 'Total Withheld', 'amount': -result.totalWithheld, 'indent': 0},
+        {'label': 'Amount Owed', 'amount': result.amountOwed, 'indent': 0},
+      ];
+    },
+    loading: () => _mockBreakdown,
+    error: (_, __) => _mockBreakdown,
+  );
 });
+
+const _mockBreakdown = <Map<String, dynamic>>[
+  {'label': 'Enter income to see breakdown', 'amount': 0.0, 'indent': 0},
+];
