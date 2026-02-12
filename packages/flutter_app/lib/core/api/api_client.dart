@@ -1,8 +1,6 @@
 import 'package:dio/dio.dart';
 
 import '../models/tax_result.dart';
-import '../models/alert.dart';
-import '../models/scenario.dart';
 import 'api_endpoints.dart';
 
 class ApiException implements Exception {

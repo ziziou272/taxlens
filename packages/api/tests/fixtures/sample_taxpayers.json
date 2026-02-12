@@ -1,0 +1,47 @@
+{
+  "single_200k_ca": {
+    "filing_status": "single",
+    "wages": 200000,
+    "state": "CA"
+  },
+  "mfj_400k_rsu_ny": {
+    "filing_status": "married_jointly",
+    "wages": 400000,
+    "rsu_income": 150000,
+    "state": "NY"
+  },
+  "single_300k_ltcg_wa": {
+    "filing_status": "single",
+    "wages": 300000,
+    "capital_gains_long": 80000,
+    "state": "WA"
+  },
+  "multi_state_ca_wa": {
+    "filing_status": "single",
+    "wages": 250000,
+    "capital_gains_long": 100000,
+    "state": "CA"
+  },
+  "high_income_iso": {
+    "filing_status": "single",
+    "wages": 800000,
+    "rsu_income": 200000,
+    "iso_exercises": [{"shares": 5000, "strike_price": 10, "fmv_at_exercise": 60}],
+    "state": "CA"
+  },
+  "simple_50k": {
+    "filing_status": "single",
+    "wages": 50000,
+    "state": "CA"
+  },
+  "zero_income": {
+    "filing_status": "single",
+    "wages": 0,
+    "state": "CA"
+  },
+  "bracket_boundary": {
+    "filing_status": "single",
+    "wages": 191950,
+    "state": "CA"
+  }
+}

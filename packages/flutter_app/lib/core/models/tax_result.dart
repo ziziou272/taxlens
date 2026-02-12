@@ -32,9 +32,6 @@ class TaxResult with _$TaxResult {
     final totalIncome = (json['total_income'] as num?)?.toDouble() ?? 0;
     final balanceDue = (json['balance_due'] as num?)?.toDouble() ?? 0;
 
-    // Reconstruct income breakdown from known fields
-    final wages = totalIncome - (json['federal_tax_on_ltcg'] as num?)?.toDouble().abs().clamp(0, totalIncome) .toDouble();
-
     return TaxResult(
       totalIncome: totalIncome,
       federalTax: federalTax,
