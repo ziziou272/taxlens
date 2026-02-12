@@ -1,17 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../core/providers/api_provider.dart';
+import '../../core/providers/settings_provider.dart';
 
-class SettingsScreen extends StatefulWidget {
+class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
 
   @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
+  ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
-  String _filingStatus = 'single';
-  String _state = 'CA';
-  final _apiUrlController =
-      TextEditingController(text: 'http://localhost:8100');
+class _SettingsScreenState extends ConsumerState<SettingsScreen> {
+  late final TextEditingController _apiUrlController;
+
+  @override
+  void initState() {
+    super.initState();
+    _apiUrlController =
+        TextEditingController(text: ref.read(apiBaseUrlProvider));
+  }
 
   @override
   void dispose() {
@@ -21,6 +28,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final settings = ref.watch(settingsProvider);
+
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
       body: ListView(
@@ -31,20 +40,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
               labelText: 'Filing Status',
               border: OutlineInputBorder(),
             ),
-            value: _filingStatus,
+            value: settings.filingStatus,
             items: const [
               DropdownMenuItem(value: 'single', child: Text('Single')),
               DropdownMenuItem(
-                  value: 'married_joint',
+                  value: 'married_jointly',
                   child: Text('Married Filing Jointly')),
               DropdownMenuItem(
-                  value: 'married_separate',
+                  value: 'married_separately',
                   child: Text('Married Filing Separately')),
               DropdownMenuItem(
                   value: 'head_of_household',
                   child: Text('Head of Household')),
             ],
-            onChanged: (v) => setState(() => _filingStatus = v!),
+            onChanged: (v) =>
+                ref.read(settingsProvider.notifier).setFilingStatus(v!),
           ),
           const SizedBox(height: 16),
           DropdownButtonFormField<String>(
@@ -52,7 +62,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               labelText: 'State',
               border: OutlineInputBorder(),
             ),
-            value: _state,
+            value: settings.state,
             items: const [
               DropdownMenuItem(value: 'CA', child: Text('California')),
               DropdownMenuItem(value: 'NY', child: Text('New York')),
@@ -60,7 +70,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               DropdownMenuItem(value: 'WA', child: Text('Washington')),
               DropdownMenuItem(value: 'FL', child: Text('Florida')),
             ],
-            onChanged: (v) => setState(() => _state = v!),
+            onChanged: (v) =>
+                ref.read(settingsProvider.notifier).setState(v!),
           ),
           const SizedBox(height: 16),
           TextFormField(
@@ -68,16 +79,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
             decoration: const InputDecoration(
               labelText: 'API Base URL',
               border: OutlineInputBorder(),
+              helperText: 'e.g. http://localhost:8100',
             ),
           ),
           const SizedBox(height: 24),
           FilledButton(
             onPressed: () {
+              ref.read(apiBaseUrlProvider.notifier).state =
+                  _apiUrlController.text.trim();
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Settings saved (mock)')),
+                const SnackBar(content: Text('Settings saved')),
               );
             },
             child: const Text('Save Settings'),
+          ),
+          const SizedBox(height: 16),
+          OutlinedButton(
+            onPressed: () {
+              ref.read(settingsProvider.notifier).setOnboardingComplete(false);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Onboarding reset. Restart app to see it.')),
+              );
+            },
+            child: const Text('Reset Onboarding'),
           ),
         ],
       ),
