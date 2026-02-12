@@ -7,7 +7,7 @@ from fastapi.responses import JSONResponse
 
 from app.config import settings
 from app.database import init_db
-from app.routers import health, tax, alerts, scenarios, documents
+from app.routers import health, tax, alerts, scenarios, documents, accounts, advisor
 
 
 @asynccontextmanager
@@ -35,6 +35,8 @@ app.include_router(tax.router, prefix="/api/tax", tags=["tax"])
 app.include_router(alerts.router, prefix="/api/alerts", tags=["alerts"])
 app.include_router(scenarios.router, prefix="/api/scenarios", tags=["scenarios"])
 app.include_router(documents.router, prefix="/api/documents", tags=["documents"])
+app.include_router(accounts.router, prefix="/api/accounts", tags=["accounts"])
+app.include_router(advisor.router, prefix="/api/advisor", tags=["advisor"])
 
 
 @app.exception_handler(ValueError)

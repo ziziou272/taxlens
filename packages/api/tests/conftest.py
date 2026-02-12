@@ -2,7 +2,14 @@
 import pytest
 from httpx import ASGITransport, AsyncClient
 
+from app.database import init_db
 from app.main import app
+
+
+@pytest.fixture(autouse=True)
+async def _setup_db():
+    """Ensure all tables exist before each test."""
+    await init_db()
 
 
 @pytest.fixture
