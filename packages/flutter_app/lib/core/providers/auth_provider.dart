@@ -1,5 +1,9 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
+const _webRedirect = 'https://taxlens.ziziou.com';
+const _nativeRedirect = 'com.taxlens.app://callback';
 
 /// Whether Supabase is initialized and available.
 final supabaseAvailableProvider = StateProvider<bool>((ref) => false);
@@ -53,7 +57,7 @@ class AuthService {
     if (_auth == null) throw Exception('Supabase not configured');
     await _auth!.signInWithOAuth(
       OAuthProvider.google,
-      redirectTo: 'com.taxlens.app://callback',
+      redirectTo: kIsWeb ? _webRedirect : _nativeRedirect,
     );
   }
 
@@ -61,7 +65,7 @@ class AuthService {
     if (_auth == null) throw Exception('Supabase not configured');
     await _auth!.signInWithOAuth(
       OAuthProvider.apple,
-      redirectTo: 'com.taxlens.app://callback',
+      redirectTo: kIsWeb ? _webRedirect : _nativeRedirect,
     );
   }
 
@@ -69,7 +73,7 @@ class AuthService {
     if (_auth == null) throw Exception('Supabase not configured');
     await _auth!.signInWithOtp(
       email: email,
-      emailRedirectTo: 'com.taxlens.app://callback',
+      emailRedirectTo: kIsWeb ? _webRedirect : _nativeRedirect,
     );
   }
 
@@ -77,7 +81,7 @@ class AuthService {
     if (_auth == null) throw Exception('Supabase not configured');
     await _auth!.resetPasswordForEmail(
       email,
-      redirectTo: 'com.taxlens.app://reset-callback',
+      redirectTo: kIsWeb ? '$_webRedirect/reset-callback' : 'com.taxlens.app://reset-callback',
     );
   }
 

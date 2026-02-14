@@ -5,11 +5,11 @@ All notable changes to TaxLens will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.4.0] - 2026-02-12
+## [0.4.0] - 2026-02-14
 
 ### Added
 
-#### Supabase Auth Integration (Phases 1-3)
+#### Supabase Auth Integration (Backend — Phases 1-3)
 - **JWT Authentication**: Supabase JWT validation with HS256, audience verification, expiry checks
 - **Auth Dependencies**: `require_auth`, `optional_auth`, `get_current_user` — all in `app/dependencies.py`
 - **Backward Compatibility**: When no `TAXLENS_SUPABASE_JWT_SECRET` is set, falls back to anonymous mode (MVP still works)
@@ -26,9 +26,54 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Rate Limiting**: `slowapi` integrated for rate limiting support
 - **74 tests passing** including auth flows, user CRUD, data isolation, security headers
 
+#### Flutter Frontend — Auth Screens & UX
+- **Login Screen** (`login_screen.dart`): Email/password sign-in, Google OAuth, Apple Sign-In, magic link option
+- **Signup Screen** (`signup_screen.dart`): New account creation with email/password
+- **MFA Setup Screen** (`mfa_setup_screen.dart`): TOTP enrollment, QR code display, verification flow
+- **Profile Screen** (`profile_screen.dart`): View/edit user profile, display name, email
+- **Account Settings Screen** (`account_settings_screen.dart`): Change email, change password, MFA management, delete account
+- **Reauth Dialog** (`reauth_dialog.dart`): Re-authentication prompt for sensitive operations
+- **Auth Gate Bottom Sheet** (`auth_gate_bottom_sheet.dart`): Login/signup prompt for unauthenticated users accessing protected features
+- **Auth Provider** (`auth_provider.dart`): Riverpod providers for auth state, current user, session, with full OAuth redirect handling (web vs native)
+
+#### Google OAuth Configuration
+- Created Google Cloud project `TaxLens-Supabase-Auth`
+- Configured OAuth consent screen and credentials
+- Integrated with Supabase Google auth provider
+- Web redirect configured for `taxlens.ziziou.com`
+
+#### Apple Sign-In Configuration
+- Apple Services ID: `com.ziziou.taxlens.web`
+- Configured Apple Developer account with Sign In with Apple capability
+- Shared key ID `587FQRF28S` with proper domain verification
+- Integrated with Supabase Apple auth provider
+
+#### Supabase Project Provisioning
+- Project ref: `kccgncphhzodneomimzt`
+- URL: `https://kccgncphhzodneomimzt.supabase.co`
+- Auth providers enabled: Google, Apple, Email/Password
+- Row Level Security configured for data isolation
+
+#### Database Migration: SQLite → Supabase Postgres
+- Migrated from local SQLite to Supabase-hosted Postgres
+- All models updated for Postgres compatibility
+- Backend connects to Supabase Postgres via environment variables
+
+#### Production Deployment to `taxlens.ziziou.com`
+- **Backend**: Docker container `taxlens-api` on port 8100 with `--network host`
+- **Frontend**: Flutter web build served via Python HTTP server on port 8101
+- **Reverse Proxy**: Caddy on port 8102 routing `/api/*` → backend (8100), all else → frontend (8101)
+- **Cloudflare Tunnel**: Routes `taxlens.ziziou.com` → `localhost:8102`
+- **systemd service**: `taxlens-web.service` manages the frontend web server
+- Flutter web built with `--dart-define` for Supabase URL and anon key
+
 ### Dependencies Added
 - `python-jose[cryptography]>=3.3.0` — JWT decoding
 - `slowapi>=0.1.9` — rate limiting
+- `supabase_flutter` — Flutter Supabase SDK
+- `flutter_riverpod` — state management for auth
+
+---
 
 ## [0.3.0] - 2025-02-12
 
@@ -98,159 +143,62 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Phase 4: Enhanced Red Flag System
 - **Estimated Payment Deadlines**: Track all quarterly deadlines (Apr 15, Jun 15, Sep 15, Jan 15)
-  - Automatic deadline detection
-  - Critical alerts for imminent deadlines (< 7 days)
-  - Warnings for missed or underpaid quarters
-  - Safe harbor calculation against prior year
 - **Quarterly Underwithholding Check**: Year-to-date pace analysis
-  - Compare YTD withholding vs projected tax
-  - Alert when behind pace
-  - Detect accelerating income (equity events)
 - **State Nexus Warnings**: Multi-state tax complexity alerts
-  - Residency threshold detection (183-day rule)
-  - Work-day taxation for remote work in other states
-  - Part-year move detection
-  - Special handling for no-income-tax states (WA, TX, FL, etc.)
 - **Wash Sale Detection**: 30-day window monitoring
-  - Detect buy-after-sell violations
-  - Detect buy-before-sell violations
-  - Partial share matching
-  - Planning mode: warns about active wash sale windows
-- **Alert Priority System**: Intelligent alert sorting
-  - `IMMEDIATE`: Critical issues, past deadlines
-  - `THIS_WEEK`: Deadlines within 7 days, amounts > $5K
-  - `THIS_MONTH`: Deadlines within 30 days, amounts > $1K
-  - `PLANNING`: Future planning items
+- **Alert Priority System**: IMMEDIATE, THIS_WEEK, THIS_MONTH, PLANNING
 
 #### Phase 5: What-If Tax Scenario Engine
 - **WhatIfEngine**: Core scenario comparison engine
-  - Set baseline scenario
-  - Add unlimited alternative scenarios
-  - Compare scenarios with tax delta
-  - Find best (lowest tax) scenario
-  - Generate comprehensive summaries
-- **Scenario Builders**: Pre-built scenario generators
-  - `create_rsu_timing_scenarios`: Vest now vs defer to next year
-  - `create_iso_exercise_scenarios`: Model different exercise amounts
-  - `create_bonus_timing_scenarios`: Current year vs deferral
-  - `create_state_move_scenarios`: Compare CA vs WA, etc.
-  - `create_capital_gains_timing_scenarios`: Realize vs defer gains
-- **Analysis Functions**:
-  - `calculate_marginal_tax_impact`: Model additional income impact
-  - `find_optimal_iso_exercise`: Binary search for AMT-optimal exercise
-  - `generate_optimization_recommendations`: Auto-suggest tax strategies
-- **Comprehensive Tax Calculations**:
-  - Federal tax with all 7 brackets
-  - LTCG/QDIV preferential rates (0%, 15%, 20%)
-  - AMT calculation for ISO exercises
-  - FICA (Social Security + Medicare + Additional Medicare)
-  - NIIT (3.8% on investment income above threshold)
-  - California state tax with mental health services tax
-  - Estimates for 15+ other states
-  - No-income-tax state handling
+- **Scenario Builders**: RSU timing, ISO exercise, bonus timing, state move, capital gains timing
+- **Analysis Functions**: Marginal tax impact, optimal ISO exercise, optimization recommendations
 
 #### Phase 6: Polish & Tests
-- **Integration Tests**: End-to-end workflow validation
-  - Tech employee full year calculation
-  - ISO exercise with AMT impact
-  - RSU vesting to sale flow
-  - Data import to calculation pipeline
-  - Multi-state scenario handling
-  - Wash sale detection flow
-  - Complete what-if workflow
-- **Documentation**: Comprehensive CHANGELOG
-
-### Improved
+- Integration tests, end-to-end workflow validation
 - Test coverage increased from 73% to 85%+
-- Federal tax calculations now include all filing statuses
-- AMT calculation properly compares TMT vs regular tax
-- LTCG tax properly "stacks" on ordinary income
 
 ### Fixed
 - Corrected function signatures for `calculate_fica`, `calculate_ltcg_tax`, `calculate_niit`
 - AMT calculation now returns actual AMT owed (TMT - regular tax)
-- State tax calculation for California returns Decimal directly
 
 ## [0.1.0] - 2025-01-15
 
 ### Added
 
 #### Phase 1: Core Engine
-- **Federal Tax Calculator**: 2025 tax bracket calculations
-  - All 7 brackets for Single, MFJ, MFS, HoH
-  - Standard deduction handling
-  - Marginal rate calculation
-- **AMT Calculator**: Alternative Minimum Tax
-  - AMT exemption and phaseout
-  - 26%/28% AMT rates
-  - ISO bargain element handling
-- **FICA Calculator**: Employment taxes
-  - Social Security (6.2% up to wage base)
-  - Medicare (1.45%)
-  - Additional Medicare (0.9% above threshold)
-- **NIIT Calculator**: Net Investment Income Tax
-  - 3.8% on investment income above threshold
-  - Threshold varies by filing status
-- **California Tax Calculator**: State income tax
-  - 9 brackets up to 13.3%
-  - Mental health services tax (1% above $1M)
-  - SDI calculation
+- Federal tax calculator (2025 rules, all 7 brackets, all filing statuses)
+- AMT calculator (exemption, phaseout, ISO bargain element)
+- FICA calculator (SS + Medicare + Additional Medicare)
+- NIIT calculator (3.8% on investment income)
+- California state tax (9 brackets, mental health services tax, SDI)
 
 #### Phase 2: Equity Intelligence
-- **RSU Calculator**: Restricted Stock Unit tracking
-  - Vesting schedule handling
-  - Ordinary income at vest
-  - Cost basis for sales
-- **ISO Calculator**: Incentive Stock Option support
-  - Exercise tracking
-  - Bargain element calculation
-  - AMT preference items
-  - Qualifying vs disqualifying dispositions
-- **NSO Calculator**: Non-Qualified Stock Option support
-  - Exercise income calculation
-  - Withholding requirements
-- **ESPP Calculator**: Employee Stock Purchase Plan
-  - Lookback provision support
-  - Qualifying vs disqualifying dispositions
-  - Ordinary income vs capital gain splitting
-
-### Data Models
-- `FilingStatus`: Single, MFJ, MFS, HoH
-- `TaxYear`: Configuration for tax year parameters
-- `IncomeBreakdown`: Categorized income tracking
-- `TaxSummary`: Complete calculation results
-- `EquityGrant`: Equity compensation tracking
-
-### Importers
-- **Fidelity CSV Parser**: NetBenefits export support
-- **Schwab CSV Parser**: Equity Award Center support
-
-### Red Flags System
-- Underwithholding detection
-- RSU withholding gap analysis
-- AMT trigger warnings
-- Washington State capital gains tax
-- NIIT threshold alerts
-- Estimated payment requirements
+- RSU, ISO, NSO, ESPP calculators
+- Fidelity and Schwab CSV importers
+- Red flags system (underwithholding, AMT triggers, NIIT thresholds)
 
 ---
 
 ## Version History Summary
 
-| Version | Date | Highlights |
-|---------|------|------------|
-| 0.3.0 | 2025-02-12 | NY/WA state tax, multi-state sourcing, cross-validation, FastAPI backend |
-| 0.2.0 | 2025-02-01 | Data integration, enhanced red flags, what-if engine |
-| 0.1.0 | 2025-01-15 | Core engine, equity calculations, basic red flags |
+| Version | Date       | Highlights |
+|---------|------------|------------|
+| 0.4.0   | 2026-02-14 | Supabase auth, Flutter frontend with auth screens, Google/Apple OAuth, Postgres migration, production deployment to taxlens.ziziou.com |
+| 0.3.0   | 2025-02-12 | NY/WA state tax, multi-state sourcing, cross-validation, FastAPI backend |
+| 0.2.0   | 2025-02-01 | Data integration, enhanced red flags, what-if engine |
+| 0.1.0   | 2025-01-15 | Core engine, equity calculations, basic red flags |
 
 ## Coming Soon
 
-### v0.4.0 (Planned)
-- Plaid integration for automatic data import
+### v0.5.0 (Planned)
+- Plaid integration for automatic data import (stubs exist)
 - Real-time stock price fetching
 - Tax loss harvesting suggestions
+- Document OCR (W-2, 1099 via Claude Vision)
+- AI tax advisor (Claude API)
 
 ### v1.0.0 (Future)
 - Production-ready release
 - Security audit complete
 - Public beta launch
+- Native iOS/Android apps

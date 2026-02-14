@@ -4,6 +4,10 @@
 
 > Year-round proactive tax planning, not just annual filing.
 
+## 🌐 Live App
+
+**https://taxlens.ziziou.com**
+
 ## What is TaxLens?
 
 TaxLens is a **tax planning tool** (not a tax filing tool) designed for tech employees with equity compensation ($200K–$1M+). It helps you:
@@ -13,78 +17,141 @@ TaxLens is a **tax planning tool** (not a tax filing tool) designed for tech emp
 - **Plan ahead** – What-if scenarios for major decisions
 - **Stay alert** – 73+ automated tax red flags
 
-## ✅ Current Status
+## ✅ Current Status (v0.4.0)
 
-### Engine (v0.2.0+)
-- Federal tax calculator (2025 rules, all brackets, AMT, FICA, NIIT, LTCG)
-- State tax: California, New York (+ NYC + Yonkers), Washington (capital gains)
-- Multi-state sourcing (183-day rule, RSU allocation, part-year moves)
-- Equity compensation: RSU, ISO, NSO, ESPP
-- Data importers: Fidelity, Schwab, E\*Trade, Robinhood CSV
-- 73+ automated red flag alerts
-- What-if scenario engine (23 scenario types)
-- Cross-validated against IRS reference values (20 scenarios, 0 discrepancies)
-- 520+ tests, 82%+ coverage
+| Component | Status | Details |
+|-----------|--------|---------|
+| **Tax Engine** | ✅ Live | Federal + CA/NY/WA, AMT, FICA, NIIT, LTCG, equity |
+| **API** | ✅ Live | FastAPI on Docker, 11+ endpoints |
+| **Flutter Web** | ✅ Live | Dashboard, calculator, scenarios, alerts |
+| **Auth** | ✅ Live | Google, Apple, Email via Supabase |
+| **Database** | ✅ Live | Supabase Postgres |
+| **Tests** | ✅ | 520+ engine tests, 74 auth tests, 82%+ coverage |
 
-### API (v0.1.0)
-- FastAPI backend with 11+ endpoints
-- Tax calculation, alerts, what-if scenarios
-- SQLAlchemy async + SQLite
-- Pydantic v2 request/response schemas
+## 🧪 How to Test
 
-### Coming Soon
-- Flutter cross-platform app (iOS + Android + Web)
-- Plaid financial data integration
-- Document OCR (W-2, 1099 via Claude Vision)
-- AI tax advisor (Claude API)
+### 1. Tax Calculator
+
+1. Open **https://taxlens.ziziou.com**
+2. You should see the **Dashboard** with a tax calculator
+3. Enter income details:
+   - Gross income (e.g., `350000`)
+   - Filing status (Single, MFJ, etc.)
+   - State (CA, NY, WA)
+4. Click **Calculate** — results show federal tax, state tax, FICA, effective rate
+5. Try different income levels to see bracket changes
+
+**Via API:**
+```bash
+curl -s https://taxlens.ziziou.com/api/tax/calculate \
+  -H "Content-Type: application/json" \
+  -d '{"gross_income": 350000, "filing_status": "single", "state": "CA"}' | python3 -m json.tool
+```
+
+### 2. Authentication
+
+**Email sign-up:**
+1. Click the **Sign In** / profile icon
+2. Choose **Sign Up** tab
+3. Enter email + password → submit
+4. Check email for confirmation link (Supabase sends it)
+5. After confirming, sign in with those credentials
+
+**Google sign-in:**
+1. Click **Sign in with Google**
+2. Complete the Google OAuth flow
+3. You should be redirected back to `taxlens.ziziou.com` and logged in
+
+**Apple sign-in:**
+1. Click **Sign in with Apple**
+2. Complete the Apple ID flow
+3. Redirected back and logged in
+
+**After logging in:**
+- Profile icon should show your account
+- Protected features (save scenarios, alerts profile) become available
+
+### 3. Alerts
+
+1. Open the **Alerts** section from the navigation
+2. Run an alert check — the engine scans for red flags:
+   - Underwithholding warnings
+   - Estimated payment deadlines
+   - AMT triggers
+   - Wash sale risks
+
+**Via API:**
+```bash
+curl -s https://taxlens.ziziou.com/api/alerts/check \
+  -H "Content-Type: application/json" \
+  -d '{"gross_income": 500000, "withholding": 80000, "filing_status": "single", "state": "CA"}' | python3 -m json.tool
+```
+
+### 4. What-If Scenarios
+
+1. Open the **Scenarios** section
+2. Choose a scenario type (e.g., "RSU Timing", "State Move", "Bonus Timing")
+3. Enter parameters (e.g., RSU value, current state, target state)
+4. Click **Run** — see side-by-side tax comparison
+5. The engine shows which option saves the most in taxes
+
+**Via API:**
+```bash
+# List available scenario types
+curl -s https://taxlens.ziziou.com/api/scenarios/types | python3 -m json.tool
+
+# Run a scenario
+curl -s https://taxlens.ziziou.com/api/scenarios/run \
+  -H "Content-Type: application/json" \
+  -d '{"type": "state_move", "params": {"income": 400000, "from_state": "CA", "to_state": "WA"}}' | python3 -m json.tool
+```
+
+### 5. API Direct Testing
+
+```bash
+# Health check
+curl -s https://taxlens.ziziou.com/api/health | python3 -m json.tool
+
+# Swagger docs (open in browser)
+open https://taxlens.ziziou.com/api/docs
+
+# Tax calculation
+curl -s https://taxlens.ziziou.com/api/tax/calculate \
+  -H "Content-Type: application/json" \
+  -d '{"gross_income": 250000, "filing_status": "married_filing_jointly", "state": "NY"}' | python3 -m json.tool
+
+# Alert check
+curl -s https://taxlens.ziziou.com/api/alerts/check \
+  -H "Content-Type: application/json" \
+  -d '{"gross_income": 300000, "withholding": 50000, "filing_status": "single", "state": "CA"}' | python3 -m json.tool
+```
 
 ## Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                       TAXLENS ARCHITECTURE                          │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                     │
-│  ┌─────────────────────────────────────────────────────────────┐   │
-│  │                     FLUTTER APP (Client)                     │   │
-│  │  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐        │   │
-│  │  │Dashboard│  │Scenarios│  │ Alerts  │  │Documents│        │   │
-│  │  └────┬────┘  └────┬────┘  └────┬────┘  └────┬────┘        │   │
-│  │       └────────────┴────────────┴────────────┘              │   │
-│  │                    State Management (Riverpod)               │   │
-│  │                    Local Cache (Drift/SQLite)                │   │
-│  └────────────────────────────┬────────────────────────────────┘   │
-│                               │ HTTPS                               │
-│  ┌────────────────────────────┼────────────────────────────────┐   │
-│  │                      PYTHON BACKEND                          │   │
-│  │                            │                                 │   │
-│  │           ┌────────────────┴────────────────┐                │   │
-│  │           │       FastAPI Application       │                │   │
-│  │           │  /api/tax  /api/alerts           │                │   │
-│  │           │  /api/scenarios  /api/advisor    │                │   │
-│  │           └────────────────┬────────────────┘                │   │
-│  │                            │                                 │   │
-│  │     ┌──────────┬───────────┼───────────┬──────────┐          │   │
-│  │     │ Tax      │ Alert     │ What-If   │ Doc      │          │   │
-│  │     │ Engine   │ Engine    │ Engine    │ Extract  │          │   │
-│  │     └──────────┘───────────┘───────────┘──────────┘          │   │
-│  │                            │                                 │   │
-│  │              Database (SQLite → Supabase)                    │   │
-│  └────────────────────────────┼────────────────────────────────┘   │
-│                               │                                     │
-│  ┌────────────────────────────┼────────────────────────────────┐   │
-│  │                    EXTERNAL SERVICES                         │   │
-│  │     ┌────────┐  ┌────────┐  ┌──────────┐  ┌────────┐       │   │
-│  │     │ Plaid  │  │ Claude │  │ Supabase │  │ Sentry │       │   │
-│  │     │  API   │  │  API   │  │  (opt)   │  │ (opt)  │       │   │
-│  │     └────────┘  └────────┘  └──────────┘  └────────┘       │   │
-│  └─────────────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────┐
+│                    taxlens.ziziou.com                      │
+│              (Cloudflare Tunnel → port 8102)               │
+├──────────────────────────────────────────────────────────┤
+│  Caddy Reverse Proxy (port 8102)                          │
+│   /api/* → FastAPI backend (Docker, port 8100)            │
+│   /*     → Flutter web (Python HTTP, port 8101)           │
+├──────────────────────────────────────────────────────────┤
+│  FastAPI Backend          │  Flutter Web Frontend          │
+│  • Tax engine             │  • Dashboard + Calculator      │
+│  • Alerts engine          │  • Auth screens (login/signup) │
+│  • What-if scenarios      │  • Scenarios UI                │
+│  • User management        │  • Alerts UI                   │
+│  • Supabase JWT auth      │  • Supabase Auth SDK           │
+├──────────────────────────────────────────────────────────┤
+│  Supabase (kccgncphhzodneomimzt)                          │
+│  • Postgres database                                       │
+│  • Auth (Google, Apple, Email)                             │
+│  • Row Level Security                                      │
+└──────────────────────────────────────────────────────────┘
 ```
 
-**Key Insight:** AI does NOT do calculations. The calculation engine is 100% deterministic rules. AI only explains, summarizes, and suggests.
-
-## Quick Start
+## Quick Start (Local Development)
 
 ### Engine CLI
 ```bash
@@ -101,31 +168,30 @@ uvicorn app.main:app --reload --port 8100
 # Docs at http://localhost:8100/docs
 ```
 
+### Flutter Web
+```bash
+cd packages/flutter_app
+flutter pub get
+flutter run -d chrome \
+  --dart-define=SUPABASE_URL=https://kccgncphhzodneomimzt.supabase.co \
+  --dart-define=SUPABASE_ANON_KEY=<your-anon-key>
+```
+
 ## Project Structure
 
 ```
 taxlens/
 ├── packages/
-│   ├── engine/          # Python tax calculation engine
-│   │   ├── taxlens_engine/
-│   │   │   ├── federal.py
-│   │   │   ├── california.py
-│   │   │   ├── new_york.py
-│   │   │   ├── washington.py
-│   │   │   ├── multi_state.py
-│   │   │   ├── equity_*.py
-│   │   │   ├── red_flags*.py
-│   │   │   ├── what_if.py
-│   │   │   └── importers/
-│   │   └── tests/
-│   └── api/             # FastAPI backend
-│       ├── app/
-│       │   ├── routers/
-│       │   ├── services/
-│       │   ├── models/
-│       │   └── schemas/
-│       └── tests/
-├── docs/
+│   ├── engine/          # Python tax calculation engine (520+ tests)
+│   ├── api/             # FastAPI backend (Docker deployed)
+│   └── flutter_app/     # Flutter web frontend
+│       └── lib/
+│           ├── core/providers/  # auth_provider.dart, etc.
+│           └── features/
+│               ├── auth/        # login, signup, MFA, profile, settings
+│               ├── dashboard/   # tax calculator
+│               ├── scenarios/   # what-if engine UI
+│               └── alerts/      # red flag alerts UI
 ├── CHANGELOG.md
 ├── DECISIONS.md
 └── ROADMAP.md
@@ -136,65 +202,29 @@ taxlens/
 | Layer | Technology |
 |-------|-----------|
 | Engine | Python 3.11+, Decimal arithmetic |
-| API | FastAPI, SQLAlchemy 2.0 async, Pydantic v2 |
-| Frontend | Flutter 3.x (coming) |
-| Database | SQLite → Supabase |
-| AI | Claude API (explanations + OCR) |
-| Data | Plaid (financial aggregation) |
-
-## ⚠️ Strategic Decision: Planning First, Filing Later
-
-TaxLens is a **planning tool**, not a filing tool. Filing brings IRS certification, liability for errors, and endless maintenance. Planning is low-risk, high-value, and fills a real market gap — no good equity-focused planning tools exist today.
-
-**Bottom line:** Use TaxLens for planning, TurboTax/CPA for filing. Maybe add filing in v2+ after engine is proven.
+| API | FastAPI, SQLAlchemy 2.0, Pydantic v2 |
+| Frontend | Flutter 3.x (Web) |
+| Database | Supabase Postgres |
+| Auth | Supabase Auth (Google, Apple, Email) |
+| Hosting | Docker + systemd + Cloudflare Tunnel |
 
 ## 🚀 Deployment
 
-### API (FastAPI)
+The app is deployed on a VPS behind Cloudflare Tunnel:
 
-**Option A — Render (one-click):**
-1. Fork/connect this repo on [Render](https://render.com)
-2. Use the `packages/api/render.yaml` blueprint
-3. Set environment variables: `ANTHROPIC_API_KEY`, `PLAID_CLIENT_ID`, `PLAID_SECRET`
+- **Backend**: `docker run --network host -p 8100:8100 taxlens-api`
+- **Frontend**: Flutter web build served by `python3 -m http.server 8101` (systemd: `taxlens-web.service`)
+- **Reverse Proxy**: Caddy on port 8102
+- **Tunnel**: Cloudflare routes `taxlens.ziziou.com` → `localhost:8102`
 
-**Option B — Fly.io:**
-```bash
-fly launch          # uses fly.toml at repo root
-fly secrets set ANTHROPIC_API_KEY=... PLAID_CLIENT_ID=... PLAID_SECRET=...
-fly deploy
-```
-
-**Option C — Docker:**
-```bash
-docker build -f packages/api/Dockerfile -t taxlens-api .
-docker run -p 8100:8100 --env-file .env taxlens-api
-```
-
-### Flutter Web (ziziou.com/taxlens)
-
+### Rebuild & Deploy Frontend
 ```bash
 cd packages/flutter_app
-chmod +x deploy_web.sh
-./deploy_web.sh
-# Copy build/web/ contents to /var/www/taxlens/ on your server
-# Add packages/flutter_app/nginx.conf snippet to your nginx config
+flutter build web --release \
+  --dart-define=SUPABASE_URL=https://kccgncphhzodneomimzt.supabase.co \
+  --dart-define=SUPABASE_ANON_KEY=<your-anon-key>
+sudo systemctl restart taxlens-web
 ```
-
-Or use the Docker approach:
-```bash
-docker build -f packages/flutter_app/Dockerfile.web -t taxlens-web .
-```
-
-### Environment Variables
-
-See `.env.example` for all configuration options.
-
-### CI/CD
-
-GitHub Actions runs on every push/PR to `master`:
-- **engine-tests** — Python engine unit tests
-- **api-tests** — FastAPI endpoint tests (depends on engine)
-- **flutter-tests** — Flutter analyze + test
 
 ## License
 
