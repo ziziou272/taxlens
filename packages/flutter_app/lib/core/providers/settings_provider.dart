@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../api/api_client.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserSettings {
   final String filingStatus;
@@ -68,7 +69,16 @@ final settingsProvider =
 });
 
 class SettingsNotifier extends StateNotifier<UserSettings> {
-  SettingsNotifier() : super(const UserSettings());
+  SettingsNotifier() : super(const UserSettings()) {
+    _loadSettings();
+  }
+
+  Future<void> _loadSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    state = state.copyWith(
+      onboardingComplete: prefs.getBool('onboardingComplete') ?? false,
+    );
+  }
 
   void update(UserSettings Function(UserSettings) updater) {
     state = updater(state);
@@ -86,6 +96,9 @@ class SettingsNotifier extends StateNotifier<UserSettings> {
       state = state.copyWith(federalWithheld: v);
   void setStateWithheld(double v) =>
       state = state.copyWith(stateWithheld: v);
-  void setOnboardingComplete(bool v) =>
-      state = state.copyWith(onboardingComplete: v);
+  Future<void> setOnboardingComplete(bool v) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('onboardingComplete', v);
+    state = state.copyWith(onboardingComplete: v);
+  }
 }
