@@ -29,42 +29,49 @@
 - [x] FastAPI backend with 11+ endpoints (PR #17)
 - [x] 520+ tests, 82%+ coverage
 
+### Flutter App MVP (Feb 2025)
+- [x] Flutter project setup (Riverpod, go_router, dark financial theme)
+- [x] Dashboard screen – tax summary overview
+- [x] Data entry forms – income, equity, withholding
+- [x] Tax breakdown visualization with charts
+- [x] Alerts list view with severity levels
+- [x] What-If Scenario UI – pick scenario type, slider inputs, before/after comparison with tax breakdown
+- [x] Onboarding flow with persistent settings
+
+### Auth & Backend Integration (Feb 2025)
+- [x] Supabase Auth integration (Google, Apple, Email sign-in)
+- [x] User settings sync to Supabase
+- [x] Onboarding persistence across sessions
+- [x] JWT auth interceptor on API client
+- [x] Web deployment at taxlens.ziziou.com (Flutter web + Docker API)
+
 ---
 
 ## 🚧 In Progress
 
-### 2025 Q1: Flutter App MVP
-- [ ] Flutter project setup (Riverpod, go_router)
-- [ ] Dashboard screen – tax summary overview
-- [ ] Data entry forms – W-2, equity grants
-- [ ] Tax breakdown visualization
-- [ ] Alerts list view
-- [ ] What-if scenario UI with sliders
+### 2025 Q1: Data Import & Intelligence
+- [ ] Document OCR: W-2, 1099-B via Claude Vision
+- [ ] Plaid integration for automatic brokerage data import
+- [ ] AI tax advisor: Claude API for plain-English explanations
+- [ ] Real-time stock price fetching
 
 ### 2025 Q1: API Enhancements
-- [ ] User authentication (Supabase Auth)
-- [ ] Persistent user profiles
 - [ ] Document upload endpoint
+- [ ] Scenario save/load (user-specific)
+- [ ] Tax-loss harvesting suggestions
 
 ---
 
 ## 📋 Planned
 
-### 2025 Q2: Data & Intelligence
-- [ ] Plaid integration for automatic brokerage data import
-- [ ] Document OCR: W-2, 1099-B via Claude Vision
-- [ ] AI tax advisor: Claude API for plain-English explanations
-- [ ] Real-time stock price fetching
-- [ ] Tax-loss harvesting suggestions
-
-### 2025 Q3: Polish & Beta
+### 2025 Q2: Polish & Beta
 - [ ] Year-end planning mode (Oct–Dec checklist)
 - [ ] Security audit
 - [ ] Performance optimization
 - [ ] Beta launch (20–50 users)
 
-### 2025 Q4: Public Launch
-- [ ] Landing page & onboarding flow
+### 2025 Q3: Public Launch
+- [ ] Landing page & marketing site
 - [ ] Stripe billing ($99/yr or $299/yr premium)
 - [ ] Help docs & FAQ
 - [ ] Public launch
@@ -87,6 +94,7 @@
 |--------|---------|-----------|---------------|
 | Calculation accuracy | 99.9%+ (cross-validated) | 99.9% | 99.99% |
 | Test coverage | 82%+ | 90% | 95% |
-| Active users | — | 100 (beta) | 1,000 |
+| Active users | — | 50 (beta) | 1,000 |
 | Alerts available | 73+ | 100+ | 150+ |
 | States supported | 3 (CA, NY, WA) | 5+ | 15+ |
+| Scenario types | 23 | 30+ | 50+ |

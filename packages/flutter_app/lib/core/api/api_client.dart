@@ -379,15 +379,19 @@ class ScenarioComparison {
   final ScenarioResultData alternative;
   final double taxSavings;
   final double savingsPercentage;
+  final Map<String, double> breakdownDiff;
 
   const ScenarioComparison({
     required this.baseline,
     required this.alternative,
     required this.taxSavings,
     required this.savingsPercentage,
+    this.breakdownDiff = const {},
   });
 
   factory ScenarioComparison.fromJson(Map<String, dynamic> json) {
+    final diffRaw = json['breakdown_diff'] as Map<String, dynamic>? ?? {};
+    final diff = diffRaw.map((k, v) => MapEntry(k, (v as num?)?.toDouble() ?? 0));
     return ScenarioComparison(
       baseline: ScenarioResultData.fromJson(
           json['baseline'] as Map<String, dynamic>),
@@ -396,6 +400,51 @@ class ScenarioComparison {
       taxSavings: (json['tax_savings'] as num?)?.toDouble() ?? 0,
       savingsPercentage:
           (json['savings_percentage'] as num?)?.toDouble() ?? 0,
+      breakdownDiff: diff,
+    );
+  }
+}
+
+class TaxBreakdown {
+  final double grossIncome;
+  final double deduction;
+  final double taxableIncome;
+  final double federalTax;
+  final double ltcgTax;
+  final double stateTax;
+  final double ficaTax;
+  final double amt;
+  final double niit;
+  final double totalTax;
+  final double effectiveRate;
+
+  const TaxBreakdown({
+    this.grossIncome = 0,
+    this.deduction = 0,
+    this.taxableIncome = 0,
+    this.federalTax = 0,
+    this.ltcgTax = 0,
+    this.stateTax = 0,
+    this.ficaTax = 0,
+    this.amt = 0,
+    this.niit = 0,
+    this.totalTax = 0,
+    this.effectiveRate = 0,
+  });
+
+  factory TaxBreakdown.fromJson(Map<String, dynamic> json) {
+    return TaxBreakdown(
+      grossIncome: (json['gross_income'] as num?)?.toDouble() ?? 0,
+      deduction: (json['deduction'] as num?)?.toDouble() ?? 0,
+      taxableIncome: (json['taxable_income'] as num?)?.toDouble() ?? 0,
+      federalTax: (json['federal_tax'] as num?)?.toDouble() ?? 0,
+      ltcgTax: (json['ltcg_tax'] as num?)?.toDouble() ?? 0,
+      stateTax: (json['state_tax'] as num?)?.toDouble() ?? 0,
+      ficaTax: (json['fica_tax'] as num?)?.toDouble() ?? 0,
+      amt: (json['amt'] as num?)?.toDouble() ?? 0,
+      niit: (json['niit'] as num?)?.toDouble() ?? 0,
+      totalTax: (json['total_tax'] as num?)?.toDouble() ?? 0,
+      effectiveRate: (json['effective_rate'] as num?)?.toDouble() ?? 0,
     );
   }
 }
@@ -404,11 +453,13 @@ class ScenarioResultData {
   final String name;
   final double totalTax;
   final double effectiveRate;
+  final TaxBreakdown? breakdown;
 
   const ScenarioResultData({
     required this.name,
     required this.totalTax,
     required this.effectiveRate,
+    this.breakdown,
   });
 
   factory ScenarioResultData.fromJson(Map<String, dynamic> json) {
@@ -416,6 +467,9 @@ class ScenarioResultData {
       name: json['name'] as String? ?? '',
       totalTax: (json['total_tax'] as num?)?.toDouble() ?? 0,
       effectiveRate: (json['effective_rate'] as num?)?.toDouble() ?? 0,
+      breakdown: json['breakdown'] != null
+          ? TaxBreakdown.fromJson(json['breakdown'] as Map<String, dynamic>)
+          : null,
     );
   }
 }
