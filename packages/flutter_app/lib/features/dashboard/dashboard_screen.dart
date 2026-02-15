@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../core/providers/settings_provider.dart';
 import 'dashboard_provider.dart';
 import 'widgets/tax_summary_card.dart';
 import 'widgets/withholding_gap_bar.dart';
@@ -14,6 +15,17 @@ class DashboardScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final resultAsync = ref.watch(taxResultProvider);
     final alertSummary = ref.watch(alertSummaryProvider);
+    final settings = ref.watch(settingsProvider);
+
+    // Auto-calculate if onboarding is complete and we have income but no result
+    if (settings.onboardingComplete &&
+        settings.totalIncome > 0 &&
+        resultAsync.value == null &&
+        !resultAsync.isLoading &&
+        !resultAsync.hasError) {
+      // Schedule after build
+      Future.microtask(() => ref.read(taxResultProvider.notifier).calculate());
+    }
 
     return Scaffold(
       appBar: AppBar(
