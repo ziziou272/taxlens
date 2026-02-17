@@ -17,16 +17,17 @@ TaxLens is a **tax planning tool** (not a tax filing tool) designed for tech emp
 - **Plan ahead** – What-if scenarios for major decisions
 - **Stay alert** – 73+ automated tax red flags
 
-## ✅ Current Status (v0.4.0)
+## ✅ Current Status (v0.5.0)
 
 | Component | Status | Details |
 |-----------|--------|---------|
 | **Tax Engine** | ✅ Live | Federal + CA/NY/WA, AMT, FICA, NIIT, LTCG, equity |
-| **API** | ✅ Live | FastAPI on Docker, 11+ endpoints |
+| **API** | ✅ Live | FastAPI on Docker, 16+ endpoints |
 | **Flutter Web** | ✅ Live | Dashboard, calculator, scenarios, alerts |
 | **Auth** | ✅ Live | Google, Apple, Email via Supabase |
 | **Database** | ✅ Live | Supabase Postgres |
 | **Tests** | ✅ | 520+ engine tests, 74 auth tests, 82%+ coverage |
+| **PDF Import** | 🚧 Backend Ready | Gemini Vision 1040 extraction, confirm flow |
 
 ## 🧪 How to Test
 
@@ -207,6 +208,7 @@ taxlens/
 | Database | Supabase Postgres |
 | Auth | Supabase Auth (Google, Apple, Email) |
 | Hosting | Docker + systemd + Cloudflare Tunnel |
+| AI Extraction | Google Gemini Vision (1040 PDF → structured data) |
 
 ## 🚀 Deployment
 
@@ -216,6 +218,12 @@ The app is deployed on a VPS behind Cloudflare Tunnel:
 - **Frontend**: Flutter web build served by `python3 -m http.server 8101` (systemd: `taxlens-web.service`)
 - **Reverse Proxy**: Caddy on port 8102
 - **Tunnel**: Cloudflare routes `taxlens.ziziou.com` → `localhost:8102`
+
+### New: Tax Return PDF Import (v0.5.0)
+- Backend endpoints at `/api/tax-returns/*`
+- Requires `TAXLENS_GEMINI_API_KEY` env var in Docker
+- Run Supabase migration before enabling: `packages/api/migrations/001_tax_returns.sql`
+- Rebuild Docker image after pulling latest code
 
 ### Rebuild & Deploy Frontend
 ```bash

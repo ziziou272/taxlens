@@ -5,6 +5,30 @@ All notable changes to TaxLens will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2026-02-17
+
+### Added
+
+#### Feature: Previous Year Tax Return Import (Phase B — PDF + AI Extraction)
+- **Design doc**: `docs/design-review-previous-year.md` — full feature spec (import methods, data model, phases, API, UI)
+- **New model**: `TaxReturn` SQLAlchemy model (`app/models/tax_return.py`) — stores all 1040 key fields
+- **New service**: `tax_return_service.py` — PDF/image upload, Gemini Vision extraction, confidence scoring, Supabase upsert
+- **New router**: `app/routers/tax_returns.py` — 5 endpoints under `/api/tax-returns`
+- **New schemas**: `app/schemas/tax_return.py` — `TaxReturnExtractResponse`, `TaxReturnConfirmRequest`, `TaxReturnResponse`, `TaxReturnSummary`
+- **Supabase migration**: `packages/api/migrations/001_tax_returns.sql` — `tax_returns` table with RLS, index, and trigger
+- **New config key**: `TAXLENS_GEMINI_API_KEY` — Google Gemini API for Vision extraction
+- **New dependencies**: `google-generativeai>=0.8.0`, `PyMuPDF>=1.24.0`, `httpx>=0.27.0`
+
+#### API Endpoints — `/api/tax-returns`
+- `POST /api/tax-returns/upload-pdf` — accepts 1040 PDF/image, extracts fields via Gemini Vision, returns with confidence scores
+- `POST /api/tax-returns/confirm` — user confirms extracted data, saves to DB + Supabase
+- `GET /api/tax-returns` — list all years (year switcher dropdown data)
+- `GET /api/tax-returns/{tax_year}` — get full return for a year
+- `DELETE /api/tax-returns/{tax_year}` — delete a year's data
+
+#### Key 1040 Fields Extracted by AI
+Filing status, AGI, total income, deduction type/amount, taxable income, total tax, credits, federal withheld, refund/owed, Schedule C/D/E data
+
 ## [0.4.0] - 2026-02-14
 
 ### Added
