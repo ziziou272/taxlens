@@ -170,6 +170,25 @@ class TaxInput {
   final double federalWithheld;
   final double stateWithheld;
 
+  // Deductions
+  final double mortgageInterest;
+  final double saltPaid;
+  final double charitableContributions;
+  final double medicalExpenses;
+
+  // Retirement & Pre-tax
+  final double contributions401k;
+  final double iraContributions;
+  final double hsaContributions;
+  final double studentLoanInterest;
+
+  // Family & Education
+  final int numChildrenUnder17;
+  final int numOtherDependents;
+  final double educationExpenses;
+  final String educationType;
+  final bool ageOver50;
+
   const TaxInput({
     this.filingStatus = 'single',
     this.wages = 0,
@@ -179,6 +198,22 @@ class TaxInput {
     this.state = 'CA',
     this.federalWithheld = 0,
     this.stateWithheld = 0,
+    // Deductions
+    this.mortgageInterest = 0,
+    this.saltPaid = 0,
+    this.charitableContributions = 0,
+    this.medicalExpenses = 0,
+    // Retirement & Pre-tax
+    this.contributions401k = 0,
+    this.iraContributions = 0,
+    this.hsaContributions = 0,
+    this.studentLoanInterest = 0,
+    // Family & Education
+    this.numChildrenUnder17 = 0,
+    this.numOtherDependents = 0,
+    this.educationExpenses = 0,
+    this.educationType = 'none',
+    this.ageOver50 = false,
   });
 
   Map<String, dynamic> toJson() => {
@@ -190,6 +225,22 @@ class TaxInput {
         'state': state,
         'federal_withheld': federalWithheld,
         'state_withheld': stateWithheld,
+        // Deductions
+        'mortgage_interest': mortgageInterest,
+        'salt_paid': saltPaid,
+        'charitable_contributions': charitableContributions,
+        'medical_expenses': medicalExpenses,
+        // Retirement & Pre-tax
+        'contributions_401k': contributions401k,
+        'ira_contributions': iraContributions,
+        'hsa_contributions': hsaContributions,
+        'student_loan_interest': studentLoanInterest,
+        // Family & Education
+        'num_children_under_17': numChildrenUnder17,
+        'num_other_dependents': numOtherDependents,
+        'education_expenses': educationExpenses,
+        'education_type': educationType,
+        'age_over_50': ageOver50,
       };
 }
 
