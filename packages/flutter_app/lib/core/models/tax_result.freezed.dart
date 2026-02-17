@@ -32,7 +32,18 @@ mixin _$TaxResult {
   double get taxableIncome => throw _privateConstructorUsedError;
   double get deductionUsed => throw _privateConstructorUsedError;
   double get socialSecurityTax => throw _privateConstructorUsedError;
-  double get medicareTax => throw _privateConstructorUsedError;
+  double get medicareTax => throw _privateConstructorUsedError; // Credits
+  double get childTaxCredit => throw _privateConstructorUsedError;
+  double get otherDependentCredit => throw _privateConstructorUsedError;
+  double get actc => throw _privateConstructorUsedError;
+  double get eitc => throw _privateConstructorUsedError;
+  double get educationCredit => throw _privateConstructorUsedError;
+  double get educationCreditRefundable => throw _privateConstructorUsedError;
+  double get totalCredits =>
+      throw _privateConstructorUsedError; // AGI & deduction detail
+  double get agi => throw _privateConstructorUsedError;
+  double get itemizedDeductionsTotal => throw _privateConstructorUsedError;
+  double get aboveTheLineDeductionsTotal => throw _privateConstructorUsedError;
 
   /// Serializes this TaxResult to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -62,7 +73,17 @@ abstract class $TaxResultCopyWith<$Res> {
       double taxableIncome,
       double deductionUsed,
       double socialSecurityTax,
-      double medicareTax});
+      double medicareTax,
+      double childTaxCredit,
+      double otherDependentCredit,
+      double actc,
+      double eitc,
+      double educationCredit,
+      double educationCreditRefundable,
+      double totalCredits,
+      double agi,
+      double itemizedDeductionsTotal,
+      double aboveTheLineDeductionsTotal});
 }
 
 /// @nodoc
@@ -93,6 +114,16 @@ class _$TaxResultCopyWithImpl<$Res, $Val extends TaxResult>
     Object? deductionUsed = null,
     Object? socialSecurityTax = null,
     Object? medicareTax = null,
+    Object? childTaxCredit = null,
+    Object? otherDependentCredit = null,
+    Object? actc = null,
+    Object? eitc = null,
+    Object? educationCredit = null,
+    Object? educationCreditRefundable = null,
+    Object? totalCredits = null,
+    Object? agi = null,
+    Object? itemizedDeductionsTotal = null,
+    Object? aboveTheLineDeductionsTotal = null,
   }) {
     return _then(_value.copyWith(
       totalIncome: null == totalIncome
@@ -147,6 +178,46 @@ class _$TaxResultCopyWithImpl<$Res, $Val extends TaxResult>
           ? _value.medicareTax
           : medicareTax // ignore: cast_nullable_to_non_nullable
               as double,
+      childTaxCredit: null == childTaxCredit
+          ? _value.childTaxCredit
+          : childTaxCredit // ignore: cast_nullable_to_non_nullable
+              as double,
+      otherDependentCredit: null == otherDependentCredit
+          ? _value.otherDependentCredit
+          : otherDependentCredit // ignore: cast_nullable_to_non_nullable
+              as double,
+      actc: null == actc
+          ? _value.actc
+          : actc // ignore: cast_nullable_to_non_nullable
+              as double,
+      eitc: null == eitc
+          ? _value.eitc
+          : eitc // ignore: cast_nullable_to_non_nullable
+              as double,
+      educationCredit: null == educationCredit
+          ? _value.educationCredit
+          : educationCredit // ignore: cast_nullable_to_non_nullable
+              as double,
+      educationCreditRefundable: null == educationCreditRefundable
+          ? _value.educationCreditRefundable
+          : educationCreditRefundable // ignore: cast_nullable_to_non_nullable
+              as double,
+      totalCredits: null == totalCredits
+          ? _value.totalCredits
+          : totalCredits // ignore: cast_nullable_to_non_nullable
+              as double,
+      agi: null == agi
+          ? _value.agi
+          : agi // ignore: cast_nullable_to_non_nullable
+              as double,
+      itemizedDeductionsTotal: null == itemizedDeductionsTotal
+          ? _value.itemizedDeductionsTotal
+          : itemizedDeductionsTotal // ignore: cast_nullable_to_non_nullable
+              as double,
+      aboveTheLineDeductionsTotal: null == aboveTheLineDeductionsTotal
+          ? _value.aboveTheLineDeductionsTotal
+          : aboveTheLineDeductionsTotal // ignore: cast_nullable_to_non_nullable
+              as double,
     ) as $Val);
   }
 }
@@ -172,7 +243,17 @@ abstract class _$$TaxResultImplCopyWith<$Res>
       double taxableIncome,
       double deductionUsed,
       double socialSecurityTax,
-      double medicareTax});
+      double medicareTax,
+      double childTaxCredit,
+      double otherDependentCredit,
+      double actc,
+      double eitc,
+      double educationCredit,
+      double educationCreditRefundable,
+      double totalCredits,
+      double agi,
+      double itemizedDeductionsTotal,
+      double aboveTheLineDeductionsTotal});
 }
 
 /// @nodoc
@@ -201,6 +282,16 @@ class __$$TaxResultImplCopyWithImpl<$Res>
     Object? deductionUsed = null,
     Object? socialSecurityTax = null,
     Object? medicareTax = null,
+    Object? childTaxCredit = null,
+    Object? otherDependentCredit = null,
+    Object? actc = null,
+    Object? eitc = null,
+    Object? educationCredit = null,
+    Object? educationCreditRefundable = null,
+    Object? totalCredits = null,
+    Object? agi = null,
+    Object? itemizedDeductionsTotal = null,
+    Object? aboveTheLineDeductionsTotal = null,
   }) {
     return _then(_$TaxResultImpl(
       totalIncome: null == totalIncome
@@ -255,6 +346,46 @@ class __$$TaxResultImplCopyWithImpl<$Res>
           ? _value.medicareTax
           : medicareTax // ignore: cast_nullable_to_non_nullable
               as double,
+      childTaxCredit: null == childTaxCredit
+          ? _value.childTaxCredit
+          : childTaxCredit // ignore: cast_nullable_to_non_nullable
+              as double,
+      otherDependentCredit: null == otherDependentCredit
+          ? _value.otherDependentCredit
+          : otherDependentCredit // ignore: cast_nullable_to_non_nullable
+              as double,
+      actc: null == actc
+          ? _value.actc
+          : actc // ignore: cast_nullable_to_non_nullable
+              as double,
+      eitc: null == eitc
+          ? _value.eitc
+          : eitc // ignore: cast_nullable_to_non_nullable
+              as double,
+      educationCredit: null == educationCredit
+          ? _value.educationCredit
+          : educationCredit // ignore: cast_nullable_to_non_nullable
+              as double,
+      educationCreditRefundable: null == educationCreditRefundable
+          ? _value.educationCreditRefundable
+          : educationCreditRefundable // ignore: cast_nullable_to_non_nullable
+              as double,
+      totalCredits: null == totalCredits
+          ? _value.totalCredits
+          : totalCredits // ignore: cast_nullable_to_non_nullable
+              as double,
+      agi: null == agi
+          ? _value.agi
+          : agi // ignore: cast_nullable_to_non_nullable
+              as double,
+      itemizedDeductionsTotal: null == itemizedDeductionsTotal
+          ? _value.itemizedDeductionsTotal
+          : itemizedDeductionsTotal // ignore: cast_nullable_to_non_nullable
+              as double,
+      aboveTheLineDeductionsTotal: null == aboveTheLineDeductionsTotal
+          ? _value.aboveTheLineDeductionsTotal
+          : aboveTheLineDeductionsTotal // ignore: cast_nullable_to_non_nullable
+              as double,
     ));
   }
 }
@@ -275,7 +406,17 @@ class _$TaxResultImpl implements _TaxResult {
       this.taxableIncome = 0,
       this.deductionUsed = 0,
       this.socialSecurityTax = 0,
-      this.medicareTax = 0})
+      this.medicareTax = 0,
+      this.childTaxCredit = 0,
+      this.otherDependentCredit = 0,
+      this.actc = 0,
+      this.eitc = 0,
+      this.educationCredit = 0,
+      this.educationCreditRefundable = 0,
+      this.totalCredits = 0,
+      this.agi = 0,
+      this.itemizedDeductionsTotal = 0,
+      this.aboveTheLineDeductionsTotal = 0})
       : _incomeBreakdown = incomeBreakdown;
 
   factory _$TaxResultImpl.fromJson(Map<String, dynamic> json) =>
@@ -317,10 +458,42 @@ class _$TaxResultImpl implements _TaxResult {
   @override
   @JsonKey()
   final double medicareTax;
+// Credits
+  @override
+  @JsonKey()
+  final double childTaxCredit;
+  @override
+  @JsonKey()
+  final double otherDependentCredit;
+  @override
+  @JsonKey()
+  final double actc;
+  @override
+  @JsonKey()
+  final double eitc;
+  @override
+  @JsonKey()
+  final double educationCredit;
+  @override
+  @JsonKey()
+  final double educationCreditRefundable;
+  @override
+  @JsonKey()
+  final double totalCredits;
+// AGI & deduction detail
+  @override
+  @JsonKey()
+  final double agi;
+  @override
+  @JsonKey()
+  final double itemizedDeductionsTotal;
+  @override
+  @JsonKey()
+  final double aboveTheLineDeductionsTotal;
 
   @override
   String toString() {
-    return 'TaxResult(totalIncome: $totalIncome, federalTax: $federalTax, stateTax: $stateTax, totalTax: $totalTax, effectiveRate: $effectiveRate, marginalRate: $marginalRate, totalWithheld: $totalWithheld, amountOwed: $amountOwed, incomeBreakdown: $incomeBreakdown, taxableIncome: $taxableIncome, deductionUsed: $deductionUsed, socialSecurityTax: $socialSecurityTax, medicareTax: $medicareTax)';
+    return 'TaxResult(totalIncome: $totalIncome, federalTax: $federalTax, stateTax: $stateTax, totalTax: $totalTax, effectiveRate: $effectiveRate, marginalRate: $marginalRate, totalWithheld: $totalWithheld, amountOwed: $amountOwed, incomeBreakdown: $incomeBreakdown, taxableIncome: $taxableIncome, deductionUsed: $deductionUsed, socialSecurityTax: $socialSecurityTax, medicareTax: $medicareTax, childTaxCredit: $childTaxCredit, otherDependentCredit: $otherDependentCredit, actc: $actc, eitc: $eitc, educationCredit: $educationCredit, educationCreditRefundable: $educationCreditRefundable, totalCredits: $totalCredits, agi: $agi, itemizedDeductionsTotal: $itemizedDeductionsTotal, aboveTheLineDeductionsTotal: $aboveTheLineDeductionsTotal)';
   }
 
   @override
@@ -353,26 +526,58 @@ class _$TaxResultImpl implements _TaxResult {
             (identical(other.socialSecurityTax, socialSecurityTax) ||
                 other.socialSecurityTax == socialSecurityTax) &&
             (identical(other.medicareTax, medicareTax) ||
-                other.medicareTax == medicareTax));
+                other.medicareTax == medicareTax) &&
+            (identical(other.childTaxCredit, childTaxCredit) ||
+                other.childTaxCredit == childTaxCredit) &&
+            (identical(other.otherDependentCredit, otherDependentCredit) ||
+                other.otherDependentCredit == otherDependentCredit) &&
+            (identical(other.actc, actc) || other.actc == actc) &&
+            (identical(other.eitc, eitc) || other.eitc == eitc) &&
+            (identical(other.educationCredit, educationCredit) ||
+                other.educationCredit == educationCredit) &&
+            (identical(other.educationCreditRefundable,
+                    educationCreditRefundable) ||
+                other.educationCreditRefundable == educationCreditRefundable) &&
+            (identical(other.totalCredits, totalCredits) ||
+                other.totalCredits == totalCredits) &&
+            (identical(other.agi, agi) || other.agi == agi) &&
+            (identical(
+                    other.itemizedDeductionsTotal, itemizedDeductionsTotal) ||
+                other.itemizedDeductionsTotal == itemizedDeductionsTotal) &&
+            (identical(other.aboveTheLineDeductionsTotal,
+                    aboveTheLineDeductionsTotal) ||
+                other.aboveTheLineDeductionsTotal ==
+                    aboveTheLineDeductionsTotal));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      totalIncome,
-      federalTax,
-      stateTax,
-      totalTax,
-      effectiveRate,
-      marginalRate,
-      totalWithheld,
-      amountOwed,
-      const DeepCollectionEquality().hash(_incomeBreakdown),
-      taxableIncome,
-      deductionUsed,
-      socialSecurityTax,
-      medicareTax);
+  int get hashCode => Object.hashAll([
+        runtimeType,
+        totalIncome,
+        federalTax,
+        stateTax,
+        totalTax,
+        effectiveRate,
+        marginalRate,
+        totalWithheld,
+        amountOwed,
+        const DeepCollectionEquality().hash(_incomeBreakdown),
+        taxableIncome,
+        deductionUsed,
+        socialSecurityTax,
+        medicareTax,
+        childTaxCredit,
+        otherDependentCredit,
+        actc,
+        eitc,
+        educationCredit,
+        educationCreditRefundable,
+        totalCredits,
+        agi,
+        itemizedDeductionsTotal,
+        aboveTheLineDeductionsTotal
+      ]);
 
   /// Create a copy of TaxResult
   /// with the given fields replaced by the non-null parameter values.
@@ -404,7 +609,17 @@ abstract class _TaxResult implements TaxResult {
       final double taxableIncome,
       final double deductionUsed,
       final double socialSecurityTax,
-      final double medicareTax}) = _$TaxResultImpl;
+      final double medicareTax,
+      final double childTaxCredit,
+      final double otherDependentCredit,
+      final double actc,
+      final double eitc,
+      final double educationCredit,
+      final double educationCreditRefundable,
+      final double totalCredits,
+      final double agi,
+      final double itemizedDeductionsTotal,
+      final double aboveTheLineDeductionsTotal}) = _$TaxResultImpl;
 
   factory _TaxResult.fromJson(Map<String, dynamic> json) =
       _$TaxResultImpl.fromJson;
@@ -434,7 +649,27 @@ abstract class _TaxResult implements TaxResult {
   @override
   double get socialSecurityTax;
   @override
-  double get medicareTax;
+  double get medicareTax; // Credits
+  @override
+  double get childTaxCredit;
+  @override
+  double get otherDependentCredit;
+  @override
+  double get actc;
+  @override
+  double get eitc;
+  @override
+  double get educationCredit;
+  @override
+  double get educationCreditRefundable;
+  @override
+  double get totalCredits; // AGI & deduction detail
+  @override
+  double get agi;
+  @override
+  double get itemizedDeductionsTotal;
+  @override
+  double get aboveTheLineDeductionsTotal;
 
   /// Create a copy of TaxResult
   /// with the given fields replaced by the non-null parameter values.
