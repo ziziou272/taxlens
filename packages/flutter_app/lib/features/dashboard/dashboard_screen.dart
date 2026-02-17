@@ -66,6 +66,7 @@ class DashboardScreen extends ConsumerWidget {
                 totalTax: result.totalTax,
                 effectiveRate: result.effectiveRate,
                 marginalRate: result.marginalRate,
+                result: result,
               ),
               const SizedBox(height: 16),
               WithholdingGapBar(

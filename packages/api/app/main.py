@@ -11,7 +11,7 @@ from slowapi.util import get_remote_address
 from app.config import settings
 from app.database import init_db
 from app.middleware.security import SecurityHeadersMiddleware
-from app.routers import health, tax, alerts, scenarios, documents, accounts, advisor, users
+from app.routers import health, tax, alerts, scenarios, documents, accounts, advisor, users, tax_returns
 
 
 @asynccontextmanager
@@ -48,6 +48,7 @@ app.include_router(documents.router, prefix="/api/documents", tags=["documents"]
 app.include_router(accounts.router, prefix="/api/accounts", tags=["accounts"])
 app.include_router(advisor.router, prefix="/api/advisor", tags=["advisor"])
 app.include_router(users.router, prefix="/api/users", tags=["users"])
+app.include_router(tax_returns.router, prefix="/api/tax-returns", tags=["tax-returns"])
 
 
 @app.exception_handler(ValueError)

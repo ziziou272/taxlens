@@ -17,6 +17,9 @@ class Settings(BaseSettings):
     # Anthropic (document OCR + AI advisor)
     anthropic_api_key: str = ""
 
+    # Google Gemini (tax return extraction)
+    gemini_api_key: str = ""
+
     # File uploads
     upload_dir: str = "./uploads"
 
