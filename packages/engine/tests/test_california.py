@@ -137,11 +137,12 @@ class TestSDI:
         sdi = calculate_sdi(Decimal("100000"))
         assert sdi == Decimal("1100.00")  # 1.1% of $100K
     
-    def test_above_wage_limit(self):
-        """Wages above SDI limit should be capped."""
+    def test_above_former_wage_limit(self):
+        """As of 2024, CA SDI has no wage cap — 1.1% applies to all wages.
+        CA AB 102 / SB 951 eliminated the annual wage base limit effective Jan 1, 2024."""
         sdi = calculate_sdi(Decimal("200000"))
-        # Capped at wage limit
-        assert sdi == Decimal("1684.80")  # 1.1% of $153,164
+        # No cap: 1.1% of full $200,000
+        assert sdi == Decimal("2200.00")  # 1.1% of $200,000
 
 
 class TestCAMarginalRate:

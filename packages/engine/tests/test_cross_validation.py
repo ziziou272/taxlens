@@ -151,12 +151,16 @@ SCENARIOS = [
         "itemized_deductions": D("0"),
         "expected": {
             "federal_tax_on_ordinary": D("52263.00"),
-            "amt_owed": D("12217.00"),
+            # AMT threshold corrected to $239,100 (Rev. Proc. 2024-40); was $232,600
+            # AMTI=$335K; exempt=$88.1K; taxable=$246.9K
+            # TMT = 26%×$239,100 + 28%×$7,800 = $62,166+$2,184 = $64,350
+            # AMT owed = $64,350 - $52,263 = $12,087
+            "amt_owed": D("12087.00"),
             "social_security_tax": D("10918.20"),
             "medicare_tax": D("3625.00"),
             "additional_medicare_tax": D("450.00"),
             "niit": D("0"),
-            "total_tax": D("79473.20"),
+            "total_tax": D("79343.20"),
         },
     },
     {
@@ -249,8 +253,12 @@ SCENARIOS = [
         "itemized_deductions": D("0"),
         "expected": {
             "federal_tax_on_ordinary": D("69297.25"),
-            "amt_owed": D("37182.75"),
-            "total_tax": D("122648.20"),
+            # AMT threshold corrected to $239,100 (Rev. Proc. 2024-40); was $232,600
+            # AMTI=$485K; exempt=$88.1K; taxable=$396.9K
+            # TMT = 26%×$239,100 + 28%×$157,800 = $62,166+$44,184 = $106,350
+            # AMT owed = $106,350 - $69,297.25 = $37,052.75
+            "amt_owed": D("37052.75"),
+            "total_tax": D("122518.20"),
         },
     },
     # --- FICA/payroll scenarios ---
