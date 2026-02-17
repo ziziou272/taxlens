@@ -108,13 +108,13 @@ class _ScaffoldWithNav extends StatelessWidget {
               selectedIcon: Icon(Icons.dashboard),
               label: 'Dashboard'),
           NavigationDestination(
-              icon: Icon(Icons.warning_amber_outlined),
-              selectedIcon: Icon(Icons.warning),
-              label: 'Alerts'),
+              icon: Icon(Icons.lightbulb_outline),
+              selectedIcon: Icon(Icons.lightbulb),
+              label: 'Tax Tips'),
           NavigationDestination(
-              icon: Icon(Icons.compare_arrows_outlined),
-              selectedIcon: Icon(Icons.compare_arrows),
-              label: 'Scenarios'),
+              icon: Icon(Icons.explore_outlined),
+              selectedIcon: Icon(Icons.explore),
+              label: 'What If'),
           NavigationDestination(
               icon: Icon(Icons.settings_outlined),
               selectedIcon: Icon(Icons.settings),

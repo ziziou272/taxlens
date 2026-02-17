@@ -47,7 +47,7 @@ class DashboardScreen extends ConsumerWidget {
                   Icon(Icons.calculate_outlined,
                       size: 64, color: Theme.of(context).colorScheme.primary),
                   const SizedBox(height: 16),
-                  Text('Enter your income to get started',
+                  Text('Enter your income to see your tax picture',
                       style: Theme.of(context).textTheme.titleMedium),
                   const SizedBox(height: 16),
                   FilledButton.icon(
