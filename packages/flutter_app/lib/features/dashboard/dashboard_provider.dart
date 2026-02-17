@@ -20,6 +20,27 @@ class TaxResultNotifier extends AsyncNotifier<TaxResult?> {
 
     state = await AsyncValue.guard(() async {
       final result = await api.calculateTax(settings.toTaxInput());
+
+      // Auto-trigger alerts check after successful calculation
+      final taxResult = TaxResult(
+        totalIncome: result.totalIncome,
+        federalTax: result.federalTax,
+        stateTax: result.stateTax,
+        totalTax: result.totalTax,
+        effectiveRate: result.effectiveRate,
+        marginalRate: result.marginalRate,
+        totalWithheld: settings.federalWithheld + settings.stateWithheld,
+        amountOwed: result.amountOwed,
+        taxableIncome: result.taxableIncome,
+        deductionUsed: result.deductionUsed,
+        socialSecurityTax: result.socialSecurityTax,
+        medicareTax: result.medicareTax,
+        incomeBreakdown: {},
+      );
+      // Fire and forget — don't block the tax result on alerts
+      Future.microtask(() {
+        ref.read(alertsResultProvider.notifier).checkAlerts(taxResult);
+      });
       // Update income breakdown with user input info
       return TaxResult(
         totalIncome: result.totalIncome,

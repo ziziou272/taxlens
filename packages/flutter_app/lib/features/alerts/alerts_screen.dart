@@ -13,12 +13,17 @@ class AlertsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final alerts = ref.watch(alertsProvider);
     final alertsAsync = ref.watch(alertsResultProvider);
+    final taxResult = ref.watch(taxResultProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Tax Tips')),
       body: alertsAsync.when(
         data: (_) {
           if (alerts.isEmpty) {
+            // If tax has been calculated but no alerts, show "all good"
+            if (taxResult.hasValue && taxResult.value != null) {
+              return _AllGoodView();
+            }
             return _EmptyTipsView();
           }
           return ListView.builder(
@@ -135,6 +140,45 @@ class _ExampleTip extends StatelessWidget {
                     )),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _AllGoodView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.positive.withAlpha(25),
+              ),
+              child: const Icon(Icons.check_circle_outline,
+                  size: 48, color: AppColors.positive),
+            ),
+            const SizedBox(height: 24),
+            Text('Looking good!',
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    )),
+            const SizedBox(height: 12),
+            Text(
+              'We checked your tax situation and didn\'t find any issues or savings opportunities right now. We\'ll keep watching!',
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+            ),
+          ],
+        ),
       ),
     );
   }
