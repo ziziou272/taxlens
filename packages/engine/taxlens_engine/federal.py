@@ -219,8 +219,11 @@ def calculate_fica(
     medicare_tax = w2_wages * tax_year.medicare_rate
     
     # Additional Medicare: 0.9% on wages over threshold
+    # IRC §3101(b)(2): MFJ=$250K, MFS=$125K, all others=$200K
     if filing_status == FilingStatus.MARRIED_JOINTLY:
         threshold = tax_year.additional_medicare_threshold_married
+    elif filing_status == FilingStatus.MARRIED_SEPARATELY:
+        threshold = tax_year.additional_medicare_threshold_married_separately
     else:
         threshold = tax_year.additional_medicare_threshold_single
     
@@ -261,8 +264,11 @@ def calculate_niit(
     if tax_year is None:
         tax_year = TaxYear()
     
+    # NIIT thresholds: MFJ=$250K, MFS=$125K, all others=$200K (IRC §1411)
     if filing_status == FilingStatus.MARRIED_JOINTLY:
         threshold = tax_year.niit_threshold_married
+    elif filing_status == FilingStatus.MARRIED_SEPARATELY:
+        threshold = tax_year.niit_threshold_married_separately
     else:
         threshold = tax_year.niit_threshold_single
     

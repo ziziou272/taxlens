@@ -29,6 +29,11 @@ from taxlens_engine.california import (
     get_ca_marginal_rate,
     calculate_sdi,
 )
+from taxlens_engine.new_york import (
+    calculate_ny_tax,
+    get_ny_standard_deduction,
+    get_ny_marginal_rate,
+)
 
 
 class TaxCalculatorInput(BaseModel):
@@ -142,11 +147,19 @@ def calculate_taxes(
         ca_deduction = max(ca_standard, itemized_deductions)
         ca_taxable = max(Decimal("0"), income.total_income - ca_deduction)
         state_tax = calculate_california_tax(ca_taxable, filing_status)
-        
-        # Add SDI to warnings (it's withheld, not additional tax owed)
+
+        # SDI is withheld from wages (not additional tax owed) — reported in warnings
+        # As of 2024, CA SDI applies to all wages with no wage cap.
         sdi = calculate_sdi(income.w2_wages + income.rsu_income)
         if sdi > 0:
             warnings.append(f"CA SDI withheld: ${sdi:,.2f}")
+
+    elif state_code == "NY":
+        # New York uses its own standard deduction
+        ny_standard = get_ny_standard_deduction(filing_status)
+        ny_deduction = max(ny_standard, itemized_deductions)
+        ny_taxable = max(Decimal("0"), income.total_income - ny_deduction)
+        state_tax = calculate_ny_tax(ny_taxable, filing_status)
     
     # ========== TOTALS ==========
     total_tax = (
@@ -174,6 +187,12 @@ def calculate_taxes(
             income.total_income - get_ca_standard_deduction(filing_status)
         )
         state_marginal = get_ca_marginal_rate(ca_taxable_for_marginal, filing_status)
+    elif state_code == "NY":
+        ny_taxable_for_marginal = max(
+            Decimal("0"),
+            income.total_income - get_ny_standard_deduction(filing_status)
+        )
+        state_marginal = get_ny_marginal_rate(ny_taxable_for_marginal, filing_status)
     else:
         state_marginal = Decimal("0")
     

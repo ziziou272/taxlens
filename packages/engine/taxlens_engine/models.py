@@ -45,10 +45,16 @@ class TaxYear(BaseModel):
     additional_medicare_rate: Decimal = Decimal("0.009")
     
     # NIIT (Net Investment Income Tax)
+    # Note: NIIT thresholds are NOT inflation-adjusted (set by ACA, IRC §1411)
     niit_threshold_single: Decimal = Decimal("200000")
     niit_threshold_married: Decimal = Decimal("250000")
+    niit_threshold_married_separately: Decimal = Decimal("125000")
     niit_rate: Decimal = Decimal("0.038")
-    
+
+    # Additional Medicare tax thresholds
+    # MFS threshold is $125,000 (IRC §3101(b)(2)); not inflation-adjusted
+    additional_medicare_threshold_married_separately: Decimal = Decimal("125000")
+
     # AMT
     amt_exemption_single: Decimal = Decimal("88100")
     amt_exemption_married_jointly: Decimal = Decimal("137000")
@@ -56,7 +62,8 @@ class TaxYear(BaseModel):
     amt_phaseout_start_married: Decimal = Decimal("1252700")
     amt_rate_low: Decimal = Decimal("0.26")
     amt_rate_high: Decimal = Decimal("0.28")
-    amt_rate_threshold: Decimal = Decimal("232600")
+    # AMT 28% rate threshold: $239,100 for 2025 (Rev. Proc. 2024-40, §3.02)
+    amt_rate_threshold: Decimal = Decimal("239100")
     
     def get_standard_deduction(self, status: FilingStatus) -> Decimal:
         """Get standard deduction for filing status."""
@@ -110,6 +117,7 @@ FEDERAL_BRACKETS_2025 = {
 }
 
 # Long-term capital gains brackets for 2025
+# Source: Rev. Proc. 2024-40; Tax Foundation Table 6.
 LTCG_BRACKETS_2025 = {
     FilingStatus.SINGLE: [
         (Decimal("48350"), Decimal("0.00")),
@@ -119,6 +127,16 @@ LTCG_BRACKETS_2025 = {
     FilingStatus.MARRIED_JOINTLY: [
         (Decimal("96700"), Decimal("0.00")),
         (Decimal("600050"), Decimal("0.15")),
+        (Decimal("Infinity"), Decimal("0.20")),
+    ],
+    FilingStatus.HEAD_OF_HOUSEHOLD: [
+        (Decimal("64750"), Decimal("0.00")),
+        (Decimal("566700"), Decimal("0.15")),
+        (Decimal("Infinity"), Decimal("0.20")),
+    ],
+    FilingStatus.MARRIED_SEPARATELY: [
+        (Decimal("48350"), Decimal("0.00")),
+        (Decimal("300000"), Decimal("0.15")),
         (Decimal("Infinity"), Decimal("0.20")),
     ],
 }

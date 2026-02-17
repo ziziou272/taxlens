@@ -78,8 +78,11 @@ CA_STANDARD_DEDUCTIONS = {
 }
 
 # SDI (State Disability Insurance) for 2025
+# As of January 1, 2024, California removed the SDI wage base limit.
+# All wages are subject to the full 1.1% SDI rate with no cap.
+# Source: CA AB 102 (2023), SB 951 (2022) — effective Jan 1, 2024.
 SDI_RATE = Decimal("0.011")  # 1.1%
-SDI_WAGE_LIMIT = Decimal("153164")  # 2025 wage limit
+SDI_WAGE_LIMIT = None  # Unlimited as of 2024 (cap removed)
 
 
 def get_ca_standard_deduction(filing_status: FilingStatus) -> Decimal:
@@ -164,19 +167,19 @@ def calculate_mental_health_tax(taxable_income: Decimal) -> Decimal:
 def calculate_sdi(wages: Decimal) -> Decimal:
     """
     Calculate California State Disability Insurance (SDI).
-    
-    SDI is 1.1% of wages up to the annual wage limit.
+
+    As of January 1, 2024, California removed the SDI wage base limit.
+    SDI is now 1.1% of ALL wages with no annual cap.
     This is withheld from employee wages.
-    
+
     Args:
         wages: W-2 wages subject to SDI
-        
+
     Returns:
         SDI amount
     """
-    taxable_wages = min(wages, SDI_WAGE_LIMIT)
-    sdi = taxable_wages * SDI_RATE
-    
+    sdi = wages * SDI_RATE
+
     return sdi.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
 
