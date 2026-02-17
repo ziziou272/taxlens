@@ -29,7 +29,7 @@ class _ScenarioConfig {
     required this.paramLabel,
     this.paramHint = '',
     this.defaultValue = 50000,
-    this.min = 0,
+    this.min = 0, // ignore: unused_element
     this.max = 500000,
     this.divisions = 100,
     this.dropdownLabel,

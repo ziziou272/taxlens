@@ -26,7 +26,7 @@ class WithholdingGapBar extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Withholding vs Projected',
+            Text('Tax paid so far vs. what you\'ll owe',
                 style: Theme.of(context).textTheme.titleSmall),
             const SizedBox(height: 12),
             ClipRRect(
@@ -43,13 +43,13 @@ class WithholdingGapBar extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Withheld: ${fmt.format(withheld)}',
+                Text('Paid: ${fmt.format(withheld)}',
                     style: AppTheme.mono
                         .copyWith(fontSize: 14, color: AppColors.positive)),
                 Text(
                   isOwed
-                      ? 'Owe: ${fmt.format(gap)}'
-                      : 'Refund: ${fmt.format(-gap)}',
+                      ? 'You\'ll owe: ${fmt.format(gap)}'
+                      : 'Refund coming: ${fmt.format(-gap)}',
                   style: AppTheme.mono.copyWith(
                     fontSize: 14,
                     color: isOwed ? AppColors.negative : AppColors.positive,
