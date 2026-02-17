@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' hide MultipartFile;
 
 import '../models/tax_result.dart';
 import '../../features/tax_returns/tax_return_model.dart';
