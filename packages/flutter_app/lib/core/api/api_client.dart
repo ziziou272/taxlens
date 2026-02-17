@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models/tax_result.dart';
+import '../../features/tax_returns/tax_return_model.dart';
 import 'api_endpoints.dart';
 
 class ApiException implements Exception {
@@ -156,6 +157,77 @@ class ApiClient {
 
   Future<Response<T>> post<T>(String path, {Object? data}) {
     return _dio.post<T>(path, data: data);
+  }
+
+  // ── Tax Returns ──────────────────────────────────────────────────────────
+
+  /// Upload a 1040 PDF for AI extraction. Returns extracted fields + confidence.
+  Future<TaxReturnExtraction> uploadTaxReturnPdf(String filePath,
+      {String? fileName}) async {
+    try {
+      final formData = FormData.fromMap({
+        'file': await MultipartFile.fromFile(
+          filePath,
+          filename: fileName ?? filePath.split('/').last,
+        ),
+      });
+      final response = await _dio.post(
+        ApiEndpoints.taxReturnUploadPdf,
+        data: formData,
+        options: Options(
+          headers: {'Content-Type': 'multipart/form-data'},
+          receiveTimeout: const Duration(seconds: 60), // PDF extraction takes time
+        ),
+      );
+      return TaxReturnExtraction.fromJson(response.data as Map<String, dynamic>);
+    } on DioException catch (e) {
+      throw ApiException(_friendlyError(e));
+    }
+  }
+
+  /// Confirm extracted (or manually entered) tax return data, saving to DB.
+  Future<TaxReturn> confirmTaxReturn(Map<String, dynamic> data) async {
+    try {
+      final response = await _dio.post(
+        ApiEndpoints.taxReturnConfirm,
+        data: data,
+      );
+      return TaxReturn.fromJson(response.data as Map<String, dynamic>);
+    } on DioException catch (e) {
+      throw ApiException(_friendlyError(e));
+    }
+  }
+
+  /// List all imported tax years.
+  Future<List<TaxReturn>> getTaxReturns() async {
+    try {
+      final response = await _dio.get(ApiEndpoints.taxReturns);
+      final list = response.data as List;
+      return list
+          .map((e) => TaxReturn.fromJson(e as Map<String, dynamic>))
+          .toList();
+    } on DioException catch (e) {
+      throw ApiException(_friendlyError(e));
+    }
+  }
+
+  /// Get data for a specific tax year.
+  Future<TaxReturn> getTaxReturn(int year) async {
+    try {
+      final response = await _dio.get(ApiEndpoints.taxReturnYear(year));
+      return TaxReturn.fromJson(response.data as Map<String, dynamic>);
+    } on DioException catch (e) {
+      throw ApiException(_friendlyError(e));
+    }
+  }
+
+  /// Delete a specific tax year's data.
+  Future<void> deleteTaxReturn(int year) async {
+    try {
+      await _dio.delete(ApiEndpoints.taxReturnYear(year));
+    } on DioException catch (e) {
+      throw ApiException(_friendlyError(e));
+    }
   }
 }
 
