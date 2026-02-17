@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'scenarios_provider.dart';
+import '../../core/providers/settings_provider.dart';
 import '../../core/api/api_client.dart' as api;
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_theme.dart';
@@ -434,13 +435,17 @@ class _ScenariosScreenState extends ConsumerState<ScenariosScreen> {
         overrides['rsu_income'] = _paramValue;
         break;
       case 'bonus_timing':
-        overrides['wages'] = (_paramValue * -1);
+        // Defer bonus: reduce wages by the bonus amount
+        final currentWagesBonus = ref.read(settingsProvider).wages;
+        overrides['wages'] = (currentWagesBonus - _paramValue).clamp(0, double.infinity);
         break;
       case 'capital_gains':
         overrides['long_term_gains'] = _paramValue;
         break;
       case 'income_shift':
-        overrides['wages'] = _paramValue * -1;
+        // Income change: add (or subtract) from current wages
+        final currentWages = ref.read(settingsProvider).wages;
+        overrides['wages'] = currentWages + _paramValue;
         break;
       case 'custom':
         overrides['itemized_deductions'] = _paramValue;
@@ -530,7 +535,7 @@ class _ResultsSection extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '${comparison.savingsPercentage.abs().toStringAsFixed(1)}% ${isSaving ? "less tax" : "more tax"}',
+                  '${comparison.savingsPercentage.abs().clamp(0, 100).toStringAsFixed(1)}% ${isSaving ? "less tax" : "more tax"}',
                   style: TextStyle(
                       color: deltaColor.withAlpha(180), fontSize: 13),
                 ),
